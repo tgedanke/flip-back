@@ -1,0 +1,92 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.flippost.DAO.Samsung.NewDelivery.Models.SamsungNewDelivery"
+           table = "wwwSamsungNewDelivery">
+
+        <meta attribute = "class-description">
+            contains information about deliveries from samsung
+        </meta>
+
+        <id name = "id" type = "int" column = "id">
+            <generator class="identity"/>
+        </id>
+
+        <property name = "messageSenderIdentifier"
+                  column = "MessageSenderIdentifier"
+                  type = "string"/>
+
+        <property name = "messageSenderName"
+                  column = "MessageSenderName"
+                  type = "string"/>
+
+        <property name = "messageReceiverIdentifier"
+                  column = "MessageReceiverIdentifier"
+                  type = "string"/>
+
+        <property name = "messageReceiverName"
+                  column = "MessageReceiverName"
+                  type = "string"/>
+
+        <property name = "messageTypeIdentifier"
+                  column = "MessageTypeIdentifier"
+                  type = "string"/>
+
+        <property name = "messageName"
+                  column = "MessageName"
+                  type = "string"/>
+
+        <property name = "messageNumber"
+                  column = "MessageNumber"
+                  type = "string"/>
+
+        <property name = "messageFunctionCode"
+                  column = "MessageFunctionCode"
+                  type = "string"/>
+
+        <property name = "documentNumber"
+                  column = "DocumentNumber"
+                  type = "string"/>
+
+        <one-to-one name = "businessType"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungBusinessType"
+                    cascade="all"/>
+
+        <one-to-one name = "orderType"
+                     class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungOrderType"
+                     cascade="all"/>
+
+        <one-to-one name = "serviceType"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungServiceType"
+                    cascade="all"/>
+
+        <one-to-one name = "division"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungDivision"
+                    cascade="all"/>
+
+        <one-to-one name = "relatedDocument"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungRelatedDocument"
+                    cascade="all"/>
+
+        <one-to-one name = "relatedDocumentNumber"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungRelatedDocumentNumber"
+                    cascade="all"/>
+
+        <one-to-one name = "samsungTransportationType"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungTransportationType"
+                    cascade="all"/>
+
+        <one-to-one name = "samsungTotalCargoInformation"
+                    class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungTotalCargoInformation"
+                    cascade="all"/>
+<!--
+        <set name="OrgItem" table="wwwSamsungOrgItem" inverse="true" lazy="true" fetch="select">
+            <key><column name="id" not-null="true"/></key>
+            <one-to-many class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungOrgItem"/>
+        </set> -->
+
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map>
+          <unit-entry name="Flippost:Configs:Hibernate:hibernate.local.hbm.xml" value="8e11de04-e8bb-43cf-ad82-69a6f91fe89e" />
+        </datasource-map>
+        <naming-strategy-map />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/Flippost/Configs/Hibernate/hibernate.local.hbm.xml" />
+      </configuration>
+    </facet>
+  </component>
+</module>

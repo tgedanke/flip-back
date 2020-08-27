@@ -1,0 +1,95 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.flippost.DAO.Samsung.NewDelivery.Models.SamsungTransportationType"
+           table = "wwwSamsungTransportationType">
+
+        <meta attribute = "class-description">
+            contains information about business types from samsung
+        </meta>
+
+        <id name = "id" type = "int" column = "id">
+            <generator class="identity"/>
+        </id>
+
+        <property name = "Code"
+                  column = "Code"
+                  type = "string"/>
+
+        <property name = "CodeDescription"
+                  column = "CodeDescription"
+                  type = "string"/>
+
+        <property name = "VesselFlightTruckName1"
+                  column = "VesselFlightTruckName1"
+                  type = "string"/>
+
+        <property name = "VesselFlightTruckName2"
+                  column = "VesselFlightTruckName2"
+                  type = "string"/>
+
+        <property name = "IncotermsCode"
+                  column = "IncotermsCode"
+                  type = "string"/>
+
+        <property name = "IncotermsPlace"
+                  column = "IncotermsPlace"
+                  type = "string"/>
+
+        <property name = "FreightMethod"
+                  column = "FreightMethod"
+                  type = "string"/>
+
+        <property name = "PaymentMethod1"
+                  column = "PaymentMethod1"
+                  type = "string"/>
+
+        <property name = "PaymentMethod2"
+                  column = "PaymentMethod2"
+                  type = "string"/>
+
+        <property name = "PaymentMethod3"
+                  column = "PaymentMethod3"
+                  type = "string"/>
+
+        <property name = "PaymentMethod4"
+                  column = "PaymentMethod4"
+                  type = "string"/>
+
+        <property name = "PaymentMethod5"
+                  column = "PaymentMethod5"
+                  type = "string"/>
+
+        <property name = "PaymentPeriod1"
+                  column = "PaymentPeriod1"
+                  type = "string"/>
+
+        <property name = "PaymentPeriod2"
+                  column = "PaymentPeriod2"
+                  type = "string"/>
+
+        <property name = "Commission"
+                  column = "Commission"
+                  type = "string"/>
+
+        <property name = "LCIssueBank"
+                  column = "LCIssueBank"
+                  type = "string"/>
+
+        <property name = "ShippingDate"
+                  column = "ShippingDate"
+                  type = "string"/>
+
+        <property name = "ShippingTime"
+                  column = "ShippingTime"
+                  type = "string"/>
+
+        <property name = "EstimateDateofArrival"
+                  column = "EstimateDateofArrival"
+                  type = "string"/>
+
+    </class>
+</hibernate-mapping>

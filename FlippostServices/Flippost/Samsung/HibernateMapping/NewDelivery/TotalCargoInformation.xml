@@ -1,0 +1,79 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.flippost.DAO.Samsung.NewDelivery.Models.SamsungTotalCargoInformation"
+           table = "wwwSamsungTotalCargoInformation">
+
+        <meta attribute = "class-description">
+            contains information about business types from samsung
+        </meta>
+
+        <id name = "id" type = "int" column = "id">
+            <generator class="identity"/>
+        </id>
+
+        <property name = "PackingQuantity"
+                  column = "PackingQuantity"
+                  type = "string"/>
+
+        <property name = "PackingQuantityCode"
+                  column = "PackingQuantityCode"
+                  type = "string"/>
+
+        <property name = "VesselFlightTruckName1"
+                  column = "VesselFlightTruckName1"
+                  type = "string"/>
+
+        <property name = "CartonPackingQuantity"
+                  column = "CartonPackingQuantity"
+                  type = "string"/>
+
+        <property name = "CartonPackingQuantityCode"
+                  column = "CartonPackingQuantityCode"
+                  type = "string"/>
+
+        <property name = "Quantity"
+                  column = "IncotermsPlace"
+                  type = "int"/>
+
+        <property name = "QuantityCode"
+                  column = "QuantityCode"
+                  type = "string"/>
+
+        <property name = "Volume"
+                  column = "Volume"
+                  type = "double"/>
+
+        <property name = "VolumeCode"
+                  column = "VolumeCode"
+                  type = "string"/>
+
+        <property name = "GrossWeight"
+                  column = "GrossWeight"
+                  type = "double"/>
+
+        <property name = "GrossWeightCode"
+                  column = "GrossWeightCode"
+                  type = "string"/>
+
+        <property name = "NetWeight"
+                  column = "NetWeight"
+                  type = "double"/>
+
+        <property name = "NetWeightCode"
+                  column = "NetWeightCode"
+                  type = "string"/>
+
+        <property name = "ChargeableWeight"
+                  column = "ChargeableWeight"
+                  type = "double"/>
+
+        <property name = "ChargeableWeightCode"
+                  column = "ChargeableWeightCode"
+                  type = "string"/>
+
+    </class>
+</hibernate-mapping>
