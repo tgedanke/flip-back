@@ -10,8 +10,6 @@ public class SamsungOrgItem {
 
     private int id;
 
-    private SamsungNewDelivery delivery;
-
     @JacksonXmlProperty(localName = "SequenceNumber")
     private int SequenceNumber;
 
@@ -29,4 +27,7 @@ public class SamsungOrgItem {
 
     @JacksonXmlProperty(localName = "Field5")
     private String Field5;
+
+    @JacksonXmlProperty(localName = "RelatedOrganization")
+    SamsungRelatedOrganization organization;
 }

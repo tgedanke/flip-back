@@ -1,0 +1,47 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name = "com.flippost.DAO.Samsung.NewDelivery.Models.SamsungRoutingInformation"
+           table = "wwwSamsungRoutingInformation">
+
+        <meta attribute = "class-description">
+            contains information about business types from samsung
+        </meta>
+
+        <id name = "id" type = "java.lang.Integer" column = "businessTypeID">
+            <generator class="identity"/>
+        </id>
+
+        <property name = "Type"
+                  column = "Type"
+                  type = "string"/>
+
+        <property name = "TypeName"
+                  column = "TypeName"
+                  type = "string"/>
+
+        <property name = "CountryCode"
+                  column = "CountryCode"
+                  type = "string"/>
+
+        <property name = "CountryName"
+                  column = "CountryName"
+                  type = "string"/>
+
+        <property name = "CityOrPortName"
+                  column = "CityOrPortName"
+                  type = "string"/>
+
+        <property name = "RegionCode"
+                  column = "RegionCode"
+                  type = "string"/>
+
+        <property name = "PostalCode"
+                  column = "PostalCode"
+                  type = "string"/>
+
+    </class>
+</hibernate-mapping>

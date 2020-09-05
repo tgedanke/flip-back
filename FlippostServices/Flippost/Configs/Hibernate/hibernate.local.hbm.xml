@@ -21,5 +21,8 @@
         <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\TransportationType.xml"/>
         <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\TotalCargoInformation.xml"/>
         <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\OrgItem.xml"/>
+        <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\RelatedOrganization.xml"/>
+        <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\LocItem.xml"/>
+        <mapping file="E:\\Projects\\FlippostServices\\Flippost\\Samsung\\HibernateMapping\\NewDelivery\\RoutingOrganization.xml"/>
     </session-factory>
 </hibernate-configuration>        

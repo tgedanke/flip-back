@@ -76,5 +76,9 @@ public class SamsungNewDelivery {
     @JacksonXmlElementWrapper(localName = "OrgList")
     @JacksonXmlProperty(localName = "OrgItem")
     Set<SamsungOrgItem> OrgItem = new HashSet<>();
+
+    @JacksonXmlElementWrapper(localName = "LocList")
+    @JacksonXmlProperty(localName = "LocItem")
+    Set<SamsungLocItem> LocItem = new HashSet<>();
 }
 

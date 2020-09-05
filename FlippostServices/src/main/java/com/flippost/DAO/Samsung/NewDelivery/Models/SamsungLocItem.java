@@ -3,19 +3,16 @@ package com.flippost.DAO.Samsung.NewDelivery.Models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
-public class SamsungBusinessType {
+public class SamsungLocItem {
 
     private int id;
-    private SamsungNewDelivery delivery;
 
-    @JacksonXmlProperty(localName = "Code")
-    private String Code;
+    @JacksonXmlProperty(localName = "SequenceNumber")
+    private int SequenceNumber;
 
-    @JacksonXmlProperty(localName = "CodeDescription")
-    private String CodeDescription;
+    @JacksonXmlProperty(localName = "RoutingInformation")
+    private SamsungRoutingInformation information;
 }

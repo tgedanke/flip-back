@@ -29,10 +29,9 @@ public class SamsungMapController {
         try {
             SamsungNewDeliveryBase delivery = new SamsungNewDeliveryBase();
             delivery.setNewDeliveryXML(model);
-            delivery.xmlToModel();
-           /* SamsungNewDeliveryDAO dao = new SamsungNewDeliveryDAOImpl();
+            SamsungNewDeliveryDAO dao = new SamsungNewDeliveryDAOImpl();
 
-            dao.insert();*/
+            dao.insert(delivery.xmlToModel());
            // delivery.validateXML();
        // } catch (SAXException e) {
          //   FlippostStatistic.addError(e.getMessage(), e);

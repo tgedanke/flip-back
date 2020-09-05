@@ -39,8 +39,11 @@
                   column = "Field5"
                   type = "string"/>
 
-       <!-- <many-to-one name="delivery" class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungOrgItem" fetch="select">
-            <column name="id" not-null="true" />
-        </many-to-one>-->
+        <many-to-one name="organization"
+                     class="com.flippost.DAO.Samsung.NewDelivery.Models.SamsungRelatedOrganization"
+                     column="organization"
+                     unique="true"
+                     not-null="true"
+                     cascade="all" />
     </class>
 </hibernate-mapping>
