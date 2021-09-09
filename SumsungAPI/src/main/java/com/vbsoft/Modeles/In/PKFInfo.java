@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.vbsoft.Modeles.In.Enums.FreightMethodCode;
+import com.vbsoft.Modeles.In.Enums.IncotermsCode;
 import com.vbsoft.Modeles.In.Enums.MessageFunctionCode;
+import com.vbsoft.Modeles.In.Enums.PaymentMethodCode;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,7 +26,7 @@ import java.util.List;
  * @author vd.zinovev
  */
 @Entity
-@Table(name = "wwwSamsungPKGInfo")
+@Table(name = "DeliveryPKGInfo")
 @Data
 @XmlRootElement(name = "nr1:PKGINF")
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -129,7 +132,6 @@ public class PKFInfo implements Serializable {
      * Описание типа процесса.
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    @JoinColumn(name = "BusinessType")
     @JacksonXmlProperty(localName = "BusinessType")
     private BusinessType businessType;
 
@@ -137,7 +139,6 @@ public class PKFInfo implements Serializable {
      * SAP Material Division.
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    @JoinColumn(name = "Division")
     @JacksonXmlProperty(localName = "Division")
     private Division division;
 
@@ -145,7 +146,6 @@ public class PKFInfo implements Serializable {
      * Документа основания.
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    @JoinColumn(name = "RelatedDocument")
     @JacksonXmlProperty(localName = "RelatedDocument")
     private RelatedDocument relatedDocument;
 
@@ -161,7 +161,6 @@ public class PKFInfo implements Serializable {
      * Тип доставки (структура).
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    @JoinColumn(name = "TransportationType")
     @JacksonXmlProperty(localName = "TransportationType")
     private TransportationType transportationType;
 
@@ -178,55 +177,96 @@ public class PKFInfo implements Serializable {
     private String vesselFlightTruckName2;
 
     /**
-     *
+     * INCOTERMS Code.
      */
     @JacksonXmlProperty(localName = "IncotermsCode")
-    private String incotermsCode;
+    private IncotermsCode incotermsCode;
 
+    /**
+     * INCOTERMS Place.
+     */
     @JacksonXmlProperty(localName = "IncotermsPlace")
     private String incotermsPlace;
 
+    /**
+     * Тип оплаты.
+     */
     @JacksonXmlProperty(localName = "FreightMethod")
-    private String freightMethod;
+    private FreightMethodCode freightMethod;
 
+    /**
+     * Форма оплаты 1.
+     */
     @JacksonXmlProperty(localName = "PaymentMethod1")
-    private String paymentMethod1;
+    private PaymentMethodCode paymentMethod1;
 
+    /**
+     * Форма оплаты 2.
+     */
     @JacksonXmlProperty(localName = "PaymentMethod2")
-    private String paymentMethod2;
+    private PaymentMethodCode paymentMethod2;
 
+    /**
+     * Форма оплаты 3.
+     */
     @JacksonXmlProperty(localName = "PaymentMethod3")
-    private String paymentMethod3;
+    private PaymentMethodCode paymentMethod3;
 
+    /**
+     * Форма оплаты 4.
+     */
     @JacksonXmlProperty(localName = "PaymentMethod4")
-    private String paymentMethod4;
+    private PaymentMethodCode paymentMethod4;
 
+    /**
+     * Информация о сроке оплаты.
+     */
     @JacksonXmlProperty(localName = "PaymentPeriod1")
     private String paymentPeriod1;
 
+    /**
+     * Информация о сроке оплаты 2.
+     */
     @JacksonXmlProperty(localName = "PaymentPeriod2")
     private String paymentPeriod2;
 
+    /**
+     * Комиссия.
+     */
     @JacksonXmlProperty(localName = "Commission")
     private String commission;
 
+    /**
+     * Банк.
+     */
     @JacksonXmlProperty(localName = "LCIssueBank")
     private String LCIssueBank;
 
+    /**
+     * Дата отгрузки в формате ГГГГММДД.
+     */
     @JacksonXmlProperty(localName = "ShippingDate")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
     private Date shippingDate;
 
+    /**
+     * Время отгрузки в формате ГГГГММДД.
+     */
     @JacksonXmlProperty(localName = "ShippingTime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HHmmss")
     private Date shippingTime;
 
+    /**
+     * Ожидаемая дата доставки в формате ГГГГММДД.
+     */
     @JacksonXmlProperty(localName = "EstimateDateofArrival")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd")
     private Date estimateDateOfArrival;
 
+    /**
+     * Суммарная информация о доставке.
+     */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    @JoinColumn(name = "TotalCargoInformation")
     @JacksonXmlProperty(localName = "TotalCargoInformation")
     private TotalCargoInformation totalCargoInformation;
 

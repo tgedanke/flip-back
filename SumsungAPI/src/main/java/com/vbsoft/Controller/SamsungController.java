@@ -10,19 +10,19 @@ import java.io.IOException;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/apis/")
+@RequestMapping("/test")
 public class SamsungController {
 
     @Autowired
     private SamsungDeliveryService service;
 
     @PostMapping(
-            path = "create",
             produces = MediaType.APPLICATION_XML_VALUE,
             consumes = MediaType.APPLICATION_XML_VALUE)
     public String getMessage(@RequestBody PKFInfo model) {
         try {
             this.service.saveDeliveryToFile(model);
+            this.service.saveSamsungRequest(model);
         } catch (IOException e) {
             return this.service.sendErrorMessage(model, e.getMessage());
         }

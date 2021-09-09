@@ -8,7 +8,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungMaterial")
+@Table(name = "DeliveryMaterial")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Material {
@@ -19,7 +19,8 @@ public class Material {
     private long ID;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "material")
+    @OneToOne
+    @JoinColumn(name = "infoID")
     private PKFInfo info;
 
     @JacksonXmlProperty(localName = "Material")
@@ -46,6 +47,7 @@ public class Material {
     @JacksonXmlProperty(localName = "BuyerMaterial")
     private String buyerMaterial;
 
-    @OneToOne(mappedBy = "material")
+    @OneToOne
+    @JoinColumn(name = "materialID")
     private MatItem item;
 }

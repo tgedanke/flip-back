@@ -14,7 +14,7 @@ import javax.persistence.*;
  * @since 1.0
  */
 @Entity
-@Table(name = "wwwSamsungDivision")
+@Table(name = "DeliveryDivision")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Division extends CodeDescription{
@@ -23,7 +23,8 @@ public class Division extends CodeDescription{
      * Информация об отправке.
      */
     @JsonIgnore
-    @OneToOne(mappedBy = "division")
+    @OneToOne
+    @JoinColumn(name = "infoID")
     private PKFInfo info;
 
 }

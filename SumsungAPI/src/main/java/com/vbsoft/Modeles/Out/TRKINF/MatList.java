@@ -7,7 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "EvnList")
+@Table(name = "TRKINFEvnList")
 @Data
 public class MatList {
 

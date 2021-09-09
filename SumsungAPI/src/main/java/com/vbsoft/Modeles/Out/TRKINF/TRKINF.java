@@ -121,10 +121,10 @@ public class TRKINF {
     @JacksonXmlElementWrapper(localName = "EvnList")
     @JacksonXmlProperty(localName = "EvnItem")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    private List<GENRESInfoListDelivery> evnInfo;
+    private List<EvnList> evnInfo;
 
     @JacksonXmlElementWrapper(localName = "MatList")
     @JacksonXmlProperty(localName = "MatItem")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
-    private List<GENRESInfoListDelivery> matInfo;
+    private List<MatList> matInfo;
 }

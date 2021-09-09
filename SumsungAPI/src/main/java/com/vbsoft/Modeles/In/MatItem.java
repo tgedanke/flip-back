@@ -8,7 +8,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungMatItem")
+@Table(name = "DeliveryMatItem")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MatItem {

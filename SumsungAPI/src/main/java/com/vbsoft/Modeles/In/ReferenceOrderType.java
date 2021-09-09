@@ -7,12 +7,13 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungReferenceOrderType")
+@Table(name = "DeliveryReferenceOrderType")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ReferenceOrderType extends CodeDescription{
 
     @JsonIgnore
-    @OneToOne(mappedBy = "referenceOrderType")
+    @OneToOne
+    @JoinColumn(name = "RefItemID")
     private RefItem item;
 }

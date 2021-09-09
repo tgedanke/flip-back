@@ -8,7 +8,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungRefItem")
+@Table(name = "DeliveryRefItem")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RefItem {

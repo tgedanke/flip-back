@@ -3,13 +3,12 @@ package com.vbsoft.Modeles.In;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.vbsoft.Modeles.Out.GENRES.GENRESDelivery;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungRelatedOrganization")
+@Table(name = "DeliveryRelatedOrganization")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RelatedOrganization {

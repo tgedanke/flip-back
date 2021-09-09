@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "wwwSamsungRelatedDocumentNumber")
+@Table(name = "DeliveryRelatedDocumentNumber")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RelatedDocumentNumber {
@@ -46,7 +46,8 @@ public class RelatedDocumentNumber {
      * Информация об отправке.
      */
     @JsonIgnore
-    @OneToOne(mappedBy = "relatedDocumentNumber")
+    @OneToOne
+    @JoinColumn(name = "infoID")
     private PKFInfo info;
 }
 

@@ -91,6 +91,7 @@ public class SamsungDeliveryService {
         try {
             return mapper.writeValueAsString(info);
         } catch (JsonProcessingException e) {
+            e.printStackTrace();
             return "GLOBAL ERROR";
         }
     }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "wwwSamsungPONumber")
+@Table(name = "DeliveryPONumber")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PONumber {
@@ -31,6 +31,7 @@ public class PONumber {
     private String POItemNumber;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "PONumber")
+    @OneToOne
+    @JoinColumn(name = "matItemID")
     private MatItem item;
 }

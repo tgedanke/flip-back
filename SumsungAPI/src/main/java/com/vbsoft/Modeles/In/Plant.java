@@ -5,15 +5,18 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "wwwSamsungTransportationType")
+@Table(name = "DeliveryPlant")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Plant  extends CodeDescription {
 
-    @OneToOne(mappedBy = "plant")
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "matItemID")
     private MatItem item;
 }

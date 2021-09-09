@@ -3,56 +3,108 @@ package com.vbsoft.Modeles.In;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.vbsoft.Modeles.In.Enums.PackingQuantityCode;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "wwwSamsungCargoInformation")
+@Table(name = "DeliveryCargoInformation")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CargoInformationPKG {
 
+    /**
+     * ID.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private long ID;
 
+    /**
+     * Общее количество упаковок в отправке.
+     */
     @JacksonXmlProperty(localName = "PackingQuantity")
-    private int packingQuantity;
+    private Integer packingQuantity;
 
+    /**
+     * Код количества.
+     */
     @JacksonXmlProperty(localName = "PackingQuantityCode")
-    private String packingQuantityCode;
+    private PackingQuantityCode packingQuantityCode;
 
+    /**
+     * Общее количество коробок в отправке.
+     */
+    @JacksonXmlProperty(localName = "CartonPackingQuantity")
+    private Integer cartonPackingQuantity;
+
+    /**
+     * Код количества коробок.
+     */
+    @JacksonXmlProperty(localName = "CartonPackingQuantityCode")
+    private PackingQuantityCode cartonPackingQuantityCode;
+
+    /**
+     * Общее количество элементов в отправке.
+     */
     @JacksonXmlProperty(localName = "Quantity")
-    private int quantity;
+    private Integer quantity;
 
+    /**
+     * Код единиц измерения количества.
+     */
     @JacksonXmlProperty(localName = "QuantityCode")
-    private String quantityCode;
+    private PackingQuantityCode quantityCode;
 
+    /**
+     * Общий объем доставки.
+     */
     @JacksonXmlProperty(localName = "Volume")
-    private float volume;
+    private Float volume;
 
+    /**
+     * Код единиц изменения объема.
+     */
     @JacksonXmlProperty(localName = "VolumeCode")
     private String volumeCode;
 
+    /**
+     * Общий вес (gross) доставки.
+     */
     @JacksonXmlProperty(localName = "GrossWeight")
-    private float grossWeight;
+    private Float grossWeight;
 
+    /**
+     * Код единиц изменения веса.
+     */
     @JacksonXmlProperty(localName = "GrossWeightCode")
-    private String grossWeightCode;
+    private PackingQuantityCode grossWeightCode;
 
+    /**
+     * Общий вес (net) доставки.
+     */
     @JacksonXmlProperty(localName = "NetWeight")
-    private float netWeight;
+    private Float netWeight;
 
+    /**
+     * Код единиц изменения веса.
+     */
     @JacksonXmlProperty(localName = "NetWeightCode")
-    private String netWeightCode;
+    private PackingQuantityCode netWeightCode;
 
+    /**
+     * Оплачиваемый вес доставки.
+     */
     @JacksonXmlProperty(localName = "ChargeableWeight")
-    private float chargeableWeight;
+    private Float chargeableWeight;
 
+    /**
+     * Код единиц изменения веса.
+     */
     @JacksonXmlProperty(localName = "ChargeableWeightCode")
-    private String chargeableWeightCode;
+    private PackingQuantityCode chargeableWeightCode;
 
     @JacksonXmlProperty(localName = "MaterialSize")
     private String materialSize;
@@ -73,6 +125,7 @@ public class CargoInformationPKG {
     private String field5;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "cargoInformation")
+    @OneToOne
+    @JoinColumn(name = "PkgItemID")
     private PkgItem item;
 }

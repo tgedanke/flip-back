@@ -35,7 +35,7 @@ public class GENRESDelivery {
     @Transient
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    @JacksonXmlProperty(localName = "xmlns:nr1", isAttribute = true)
+    @JacksonXmlProperty(localName = "xmlns:xsi", isAttribute = true)
     private String xsi = "http://www.w3.org/2001/XMLSchema-instance";
 
     @Transient

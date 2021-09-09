@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.vbsoft.Modeles.In.Enums.TransportationTypeCode;
-import com.vbsoft.Utils.Tools;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -17,7 +16,7 @@ import javax.persistence.*;
  * @since 1.0
  */
 @Entity
-@Table(name = "wwwSamsungTransportationType")
+@Table(name = "DeliveryTransportationType")
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TransportationType {
@@ -31,7 +30,8 @@ public class TransportationType {
     private long ID;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "transportationType")
+    @OneToOne
+    @JoinColumn(name = "infoID")
     private PKFInfo info;
 
     /**
@@ -52,7 +52,8 @@ public class TransportationType {
      */
     public String getCodeDescription() {
         if (this.codeDescription == null & this.code != null)
-            this.codeDescription = Tools.getEnumByAnnotation(TransportationTypeCode.class, this.code.getValue()).getValue();
+            this.codeDescription = this.code.getValue();
+
 
         return this.codeDescription;
     }
