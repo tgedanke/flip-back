@@ -27,6 +27,7 @@ com\vbsoft\Modeles\In\Plant.class
 com\vbsoft\Modeles\In\RelatedDocumentNumber.class
 com\vbsoft\Modeles\In\CargoInformation.class
 com\vbsoft\Modeles\Out\GENRES\GENRESDelivery.class
+com\vbsoft\Modeles\In\Enums\CountryCode.class
 com\vbsoft\Modeles\In\Enums\IncotermsCode.class
 com\vbsoft\Modeles\In\Enums\MessageFunctionCode.class
 com\vbsoft\Modeles\Out\TRKINF\TRKINF.class
@@ -35,6 +36,7 @@ com\vbsoft\Modeles\Out\TRKINF\MatList.class
 com\vbsoft\Modeles\In\StorageLocation.class
 com\vbsoft\Modeles\In\Division.class
 com\vbsoft\Utils\HibernateUtils.class
+com\vbsoft\Modeles\In\Enums\RoutingInformationItemCode.class
 com\vbsoft\Modeles\In\PkgItem.class
 com\vbsoft\Modeles\In\BusinessType.class
 com\vbsoft\Modeles\In\RefItem.class
