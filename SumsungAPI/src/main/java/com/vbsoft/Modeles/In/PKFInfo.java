@@ -270,11 +270,17 @@ public class PKFInfo implements Serializable {
     @JacksonXmlProperty(localName = "TotalCargoInformation")
     private TotalCargoInformation totalCargoInformation;
 
+    /**
+     * Список получателей.
+     */
     @JacksonXmlElementWrapper(localName = "OrgList")
     @JacksonXmlProperty(localName = "OrgItem")
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrgItem> orgItems = new LinkedList<>();
 
+    /**
+     * Информация о маршруте.
+     */
     @JacksonXmlElementWrapper(localName = "LocList")
     @JacksonXmlProperty(localName = "LocItem")
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
