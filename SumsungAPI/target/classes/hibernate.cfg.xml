@@ -10,6 +10,5 @@
         <property name="hibernate.connection.url">jdbc:jtds:sqlserver://rocket/edi</property>
         <property name="hibernate.connection.username">edi</property>
         <property name="hibernate.connection.password">ide</property>
-        <property name="hibernate.hbm2ddl.auto">create-drop</property>
     </session-factory>
 </hibernate-configuration>
