@@ -63,7 +63,9 @@ public enum RelatedOrganizationCode {
     @JsonProperty("VE")
     Employee("Employee"),
     @JsonProperty("SH")
-    Shipper("Shipper");
+    Shipper("Shipper"),
+    @JsonProperty("SP")
+    SP("Shipper");
 
     @Getter
     private final String value;

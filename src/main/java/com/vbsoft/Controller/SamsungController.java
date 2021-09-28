@@ -1,5 +1,10 @@
 package com.vbsoft.Controller;
 
+import ch.qos.logback.core.util.FileUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Services.SamsungDeliveryService;
@@ -41,19 +46,30 @@ public class SamsungController {
 
     /**
      * POST запрос.
-     * @param model Модель тела запроса
+     * @param mod Модель тела запроса
      * @return Ответ клиенту
-     * @throws ServiceException Возникает при нарушении работы сервиса
      */
     @PostMapping
-    public String getMessage(@RequestBody PKFInfo model) throws ServiceException {
+    public String getMessage(@RequestBody String mod) throws ServiceException {
+        PKFInfo model = null;
         try {
+            ObjectMapper mapper = new XmlMapper();
+            model = mapper.readValue(mod,PKFInfo.class);
+
             this.service.saveDeliveryToFile(model);
             this.service.saveSamsungRequest(model);
             return this.service.sendSuccessMessage(model);
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e) {
             throw new ServiceException(model, e.getMessage());
         }
+
+        return null;
     }
 
     /**
