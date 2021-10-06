@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 @Service
 public class SamsungDeliveryService {
 
-    private final String URL = "112.106.130.24:29443";
+    private final String URL = "https://dev.samsungedi.com:29443/http/handler?SenderCode=lsp_flippost";
     private final Logger LOG = Logger.getLogger("Root");
 
     public void saveDeliveryToFile(final PKFInfo REQUEST_BODY) throws IOException {
