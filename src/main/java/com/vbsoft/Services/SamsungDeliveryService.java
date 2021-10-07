@@ -10,9 +10,14 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import javax.net.ssl.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.*;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -63,9 +68,18 @@ public class SamsungDeliveryService {
         answer.setAckSendDate(new Date());
         answer.setAckSendTime(new Date());
         answer.setInfo("SUCCESS");
+        this.sendRequestToSamsung(mapper.writeValueAsString(answer));
 
+        return mapper.writeValueAsString(answer);
+    }
+
+    private void sendRequestToSamsung(String REQUEST_BODY) {
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(MediaType.parse("text/xml"), mapper.writeValueAsString(answer));
+        OkHttpClient.Builder builder = client.newBuilder();
+        builder.sslSocketFactory(trustAllSslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+        builder.hostnameVerifier((hostname, session) -> true);
+        client = builder.build();
+        RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(URL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
             LOG.info(response.body().string());
@@ -73,8 +87,41 @@ public class SamsungDeliveryService {
             e.printStackTrace();
             LOG.log(Level.WARNING, e.getMessage());
         }
-        return mapper.writeValueAsString(answer);
     }
 
+    private static final TrustManager[] trustAllCerts = new TrustManager[] {
+            new X509TrustManager() {
+                @Override
+                public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+                }
+
+                @Override
+                public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+
+                }
+
+                @Override
+                public X509Certificate[] getAcceptedIssuers() {
+                    return new X509Certificate[] {};
+                }
+            }
+
+    };
+
+    private static final SSLContext trustAllSslContext;
+
+    static {
+        try {
+            trustAllSslContext = SSLContext.getInstance("SSL");
+            trustAllSslContext.init(null, trustAllCerts, new SecureRandom());
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static final SSLSocketFactory trustAllSslSocketFactory = trustAllSslContext.getSocketFactory();
 
 }
