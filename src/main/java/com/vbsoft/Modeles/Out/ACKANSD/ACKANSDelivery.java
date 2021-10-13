@@ -2,6 +2,7 @@ package com.vbsoft.Modeles.Out.ACKANSD;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.vbsoft.Modeles.In.PKFInfo;
 import lombok.Data;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Table(name = "ACKANSDeliveries")
 @Data
 @XmlRootElement(name = "nr1:ACKANS")
+@JsonRootName("nr1:ACKANS")
 public class ACKANSDelivery {
 
     @Id

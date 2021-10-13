@@ -60,8 +60,8 @@ public class SamsungDeliveryService {
     public String sendSuccessMessage(final PKFInfo REQUEST_BODY) throws JsonProcessingException {
         XmlMapper mapper = new XmlMapper();
         ACKANSDelivery answer = new ACKANSDelivery();
-        answer.setSenderIdentifier(REQUEST_BODY.getSenderIdentifier());
-        answer.setReceiverIdentifier(REQUEST_BODY.getReceiverIdentifier());
+        answer.setSenderIdentifier(REQUEST_BODY.getReceiverIdentifier());
+        answer.setReceiverIdentifier(REQUEST_BODY.getSenderIdentifier());
         answer.setNumber(REQUEST_BODY.getNumber());
         answer.setMessageReceiveDate(new Date());
         answer.setMessageReceiveTime(new Date());
@@ -79,6 +79,7 @@ public class SamsungDeliveryService {
         builder.sslSocketFactory(trustAllSslSocketFactory, (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
         client = builder.build();
+        REQUEST_BODY = "<xml version=\"1.0\"encoding =\"UTF-8\">\n" + REQUEST_BODY;
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(URL).post(body).build();
         try (Response response = client.newCall(request).execute()) {

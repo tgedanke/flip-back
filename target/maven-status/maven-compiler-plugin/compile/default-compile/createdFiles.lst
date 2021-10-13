@@ -3,6 +3,7 @@ com\vbsoft\Modeles\In\PKFInfo.class
 com\vbsoft\Modeles\In\CodeDescription.class
 com\vbsoft\Services\SamsungDeliveryService.class
 com\vbsoft\Modeles\In\Enums\BusinessTypeCode.class
+com\vbsoft\Services\SamsungDeliveryService$1.class
 com\vbsoft\Configs\Service\DebugServiceConfig.class
 com\vbsoft\Modeles\In\RelatedOrganization.class
 com\vbsoft\Modeles\In\ReferenceOrderType.class
@@ -34,6 +35,7 @@ com\vbsoft\Modeles\Out\ACKANSD\ACKANSDelivery.class
 com\vbsoft\Modeles\In\Enums\RelatedDocumentCode.class
 com\vbsoft\Modeles\In\TotalCargoInformation.class
 com\vbsoft\Modeles\In\PONumber.class
+com\vbsoft\Configs\App\XmlConfig.class
 com\vbsoft\Modeles\In\CargoInformationPKG.class
 com\vbsoft\Utils\Tools.class
 com\vbsoft\Modeles\In\Enums\FreightMethodCode.class
