@@ -79,7 +79,7 @@ public class SamsungDeliveryService {
         builder.sslSocketFactory(trustAllSslSocketFactory, (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
         client = builder.build();
-        REQUEST_BODY = "<xml version=\"1.0\"encoding =\"UTF-8\">\n" + REQUEST_BODY;
+        REQUEST_BODY = "<?xml version=\"1.0\"encoding =\"UTF-8\"?>\n" + REQUEST_BODY;
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(URL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
