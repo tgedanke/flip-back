@@ -8,6 +8,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Services.SamsungDeliveryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +30,8 @@ import java.io.IOException;
         produces = MediaType.TEXT_XML_VALUE,
         consumes = MediaType.TEXT_XML_VALUE)
 public class SamsungController {
+
+    private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
 
     /**
      * Сервис обработки.
@@ -61,11 +65,35 @@ public class SamsungController {
             return this.service.sendSuccessMessage(model);
         } catch (JsonMappingException e) {
             e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка разметки json ключей.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка конвертации json в модель.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка чтения записи.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
         } catch (Exception e) {
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Необработанная ошибка.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
             throw new ServiceException(model, e.getMessage());
         }
 

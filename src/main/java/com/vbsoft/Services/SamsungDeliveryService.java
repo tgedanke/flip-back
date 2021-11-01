@@ -8,26 +8,31 @@ import com.vbsoft.Utils.HibernateUtils;
 import okhttp3.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.net.ssl.*;
-import java.io.FileInputStream;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.*;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 @Service
 public class SamsungDeliveryService {
 
     private final String URL = "https://dev.samsungedi.com:29443/http/handler?SenderCode=lsp_flippost";
-    private final Logger LOG = Logger.getLogger("Root");
+    private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
 
     public void saveDeliveryToFile(final PKFInfo REQUEST_BODY) throws IOException {
         XmlMapper mapper = new XmlMapper();
@@ -73,6 +78,10 @@ public class SamsungDeliveryService {
         return mapper.writeValueAsString(answer);
     }
 
+    /**
+     * Отправка ответа обработки заказа на сервер самсунга.
+     * @param REQUEST_BODY Тела ответа
+     */
     private void sendRequestToSamsung(String REQUEST_BODY) {
         OkHttpClient client = new OkHttpClient();
         OkHttpClient.Builder builder = client.newBuilder();
@@ -83,10 +92,44 @@ public class SamsungDeliveryService {
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(URL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
+            LOG.info("""
+                            Ответ на сервер самсунга отправлен.
+                            Url - '%s'.
+                            Код ответа - '%d'
+                            
+                            Тело ответа:
+                             '%s'
+                            """.formatted(
+                                    URL,
+                            response.code(),
+                            response.code()));
+            if(response.code() != 200) {
+                LOG.error("""
+                            Ответ от сервера самсунг отличается от ожидаемого.
+                            Url - '%s'.
+                            Код ответа - '%d'
+                            Ожидаемый код - '200'
+                            """.formatted(
+                        URL,
+                        response.code()));
+            }
             LOG.info(response.body().string());
         } catch (IOException e) {
-            e.printStackTrace();
-            LOG.log(Level.WARNING, e.getMessage());
+            LOG.error("""
+                            Ошибка чтения ответа от сервера самсунг.
+                            Url - '%s'.
+                            Сообщение - '%s'
+                            """.formatted(
+                    URL,
+                    e.getMessage()));
+        } catch (Exception ex) {
+            LOG.error("""
+                            Необработанная ошибка при посылки запроса на сервер самсунг.
+                            Url - '%s'.
+                            Сообщение - '%s'
+                            """.formatted(
+                    URL,
+                    ex.getMessage()));
         }
     }
 
