@@ -24,7 +24,7 @@ public class ACKANSDelivery {
     private long ID;
 
     @JacksonXmlProperty(localName = "xmlns:nr1", isAttribute = true)
-    private String ns = "http://edi.sec.samsung.com/GLS_ECC_LE/ULEM";
+    private String ns = "http://edi.sec.samsung.com/GLS_ECC_LE/ELEM";
 
     @JacksonXmlProperty(localName = "MessageSenderIdentifier")
     private String senderIdentifier;

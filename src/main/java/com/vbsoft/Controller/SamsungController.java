@@ -101,6 +101,58 @@ public class SamsungController {
     }
 
     /**
+     * POST запрос.
+     * @param mod Модель тела запроса
+     * @return Ответ клиенту
+     */
+    @PostMapping("only")
+    public String getMessageOnly(@RequestBody String mod) throws ServiceException {
+        PKFInfo model = null;
+        try {
+            ObjectMapper mapper = new XmlMapper();
+            model = mapper.readValue(mod,PKFInfo.class);
+
+            this.service.saveDeliveryToFile(model);
+            this.service.saveSamsungRequest(model);
+            return mod;
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка разметки json ключей.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка конвертации json в модель.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Ошибка чтения записи.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
+        } catch (Exception e) {
+            LOG.error("""
+                    Не удалось принять запрос от самсунга.
+                    Необработанная ошибка.
+                    Сообщение:
+                    %s
+                    """.formatted(e.getMessage()));
+            throw new ServiceException(model, e.getMessage());
+        }
+
+        return null;
+    }
+
+    /**
      * Get запрос (неактивен).
      * @return Ответ клиенту
      */
