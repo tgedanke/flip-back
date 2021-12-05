@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
+import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import com.vbsoft.Services.SamsungDeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ import java.io.IOException;
         produces = MediaType.TEXT_XML_VALUE,
         consumes = MediaType.TEXT_XML_VALUE)
 public class SamsungController {
+
+    @Autowired
+    private DeliveryDAO deliveryDAO;
 
     private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
 
@@ -156,10 +160,11 @@ public class SamsungController {
      * Get запрос (неактивен).
      * @return Ответ клиенту
      */
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    @GetMapping
-    public String get() {
-        return null;
+    @GetMapping(value = "/{document}")
+    public String get(@PathVariable String document) {
+        PKFInfo doс = this.service.getRequestByDocumentNumber(document);
+        this.service.saveSamsungRequest(doс);
+        return document;
     }
 
     /**

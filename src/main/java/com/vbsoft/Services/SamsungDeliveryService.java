@@ -4,12 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
-import com.vbsoft.Utils.HibernateUtils;
+import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import okhttp3.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.SSLContext;
@@ -31,8 +30,15 @@ import java.util.Date;
 @Service
 public class SamsungDeliveryService {
 
+    @Autowired
+    private DeliveryDAO deliveryDAO;
+
     private final String URL = "https://dev.samsungedi.com:29443/http/handler?SenderCode=lsp_flippost";
     private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
+
+    public PKFInfo getRequestByDocumentNumber(String number) {
+        return this.deliveryDAO.findByDocumentNumber(number);
+    }
 
     public void saveDeliveryToFile(final PKFInfo REQUEST_BODY) throws IOException {
         XmlMapper mapper = new XmlMapper();
@@ -55,12 +61,9 @@ public class SamsungDeliveryService {
         REQUEST_BODY.getRefItems().forEach(item -> item.setInfo(REQUEST_BODY));
         REQUEST_BODY.getMatItems().forEach(item -> item.setInfo(REQUEST_BODY));
         REQUEST_BODY.getPkgItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        Session session = HibernateUtils.getSessionFactory().openSession();
-        Transaction t = session.beginTransaction();
-        session.save(REQUEST_BODY);
-        t.commit();
-        session.clear();
+        deliveryDAO.save(REQUEST_BODY);
     }
+
 
     public String sendSuccessMessage(final PKFInfo REQUEST_BODY) throws JsonProcessingException {
         XmlMapper mapper = new XmlMapper();

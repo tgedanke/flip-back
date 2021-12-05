@@ -1,2 +1,32 @@
-logging.level.org.springframework.web: ERROR
-logging.level.org.hibernate: ERROR
+spring:
+  datasource:
+    driver-class-name: net.sourceforge.jtds.jdbc.Driver
+    username: edi
+    password: ide
+    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: select 1
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: sql_server
+    database-platform: org.hibernate.dialect.SQLServer2008Dialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Europe/Moscow
+        defualt_schema: dbo
+  profiles:
+    active: debug
+logging:
+  level:
+    org:
+      hibernate: error
+      springframework-web: error
+    com.vbsoft: error
