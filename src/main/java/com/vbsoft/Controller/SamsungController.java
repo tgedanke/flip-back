@@ -1,22 +1,20 @@
 package com.vbsoft.Controller;
 
-import ch.qos.logback.core.util.FileUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
-import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import com.vbsoft.Services.SamsungDeliveryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Контоллер обмена.
@@ -30,12 +28,8 @@ import java.io.IOException;
 @RequestMapping(value = "/test",
         produces = MediaType.TEXT_XML_VALUE,
         consumes = MediaType.TEXT_XML_VALUE)
+@Slf4j
 public class SamsungController {
-
-    @Autowired
-    private DeliveryDAO deliveryDAO;
-
-    private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
 
     /**
      * Сервис обработки.
@@ -69,7 +63,7 @@ public class SamsungController {
             return this.service.sendSuccessMessage(model);
         } catch (JsonMappingException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка разметки json ключей.
                     Сообщение:
@@ -77,7 +71,7 @@ public class SamsungController {
                     """.formatted(e.getMessage()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка конвертации json в модель.
                     Сообщение:
@@ -85,20 +79,20 @@ public class SamsungController {
                     """.formatted(e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка чтения записи.
                     Сообщение:
                     %s
                     """.formatted(e.getMessage()));
         } catch (Exception e) {
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Необработанная ошибка.
                     Сообщение:
                     %s
                     """.formatted(e.getMessage()));
-            throw new ServiceException(model, e.getMessage());
+            throw new ServiceException(Objects.requireNonNull(model), e.getMessage());
         }
 
         return null;
@@ -121,7 +115,7 @@ public class SamsungController {
             return mod;
         } catch (JsonMappingException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка разметки json ключей.
                     Сообщение:
@@ -129,7 +123,7 @@ public class SamsungController {
                     """.formatted(e.getMessage()));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка конвертации json в модель.
                     Сообщение:
@@ -137,20 +131,20 @@ public class SamsungController {
                     """.formatted(e.getMessage()));
         } catch (IOException e) {
             e.printStackTrace();
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Ошибка чтения записи.
                     Сообщение:
                     %s
                     """.formatted(e.getMessage()));
         } catch (Exception e) {
-            LOG.error("""
+            log.error("""
                     Не удалось принять запрос от самсунга.
                     Необработанная ошибка.
                     Сообщение:
                     %s
                     """.formatted(e.getMessage()));
-            throw new ServiceException(model, e.getMessage());
+            throw new ServiceException(Objects.requireNonNull(model), e.getMessage());
         }
 
         return null;
@@ -162,8 +156,7 @@ public class SamsungController {
      */
     @GetMapping(value = "/{document}")
     public String get(@PathVariable String document) {
-        PKFInfo doс = this.service.getRequestByDocumentNumber(document);
-        this.service.saveSamsungRequest(doс);
+        this.service.saveSamsungRequest(this.service.getRequestByDocumentNumber(document));
         return document;
     }
 

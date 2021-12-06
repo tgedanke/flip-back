@@ -1,6 +1,5 @@
 package com.vbsoft.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.vbsoft.Exceptions.ServiceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

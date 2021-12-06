@@ -122,7 +122,7 @@ public enum TransportationTypeCode {
      * Значение enum.
      */
     @Getter
-    private String value;
+    private final String value;
 
     /**
      * Конструктор.
