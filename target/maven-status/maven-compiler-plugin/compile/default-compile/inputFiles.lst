@@ -7,9 +7,9 @@ D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\PKFInfo.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Utils\Tools.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\CodeDescription.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Enums\CountryCode.java
-D:\Projects\flip-back\src\main\java\com\vbsoft\Configs\App\ContentConfig.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\RefItem.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\RelatedOrganization.java
+D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\Repositiries\DeliveryDAO.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Configs\Service\DebugServiceConfig.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\PkgItem.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\RelatedDocumentNumber.java
@@ -17,7 +17,6 @@ D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Division.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\Out\GENRES\GENRESDelivery.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Enums\RoutingInformationCode.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\RelatedDocument.java
-D:\Projects\flip-back\src\main\java\com\vbsoft\Configs\App\XmlConfig.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Enums\BusinessTypeCode.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\StorageLocation.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Configs\Service\ServiceConfig.java
@@ -33,7 +32,6 @@ D:\Projects\flip-back\src\main\java\com\vbsoft\App.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Controller\SamsungController.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Enums\PaymentMethodCode.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\TransportationType.java
-D:\Projects\flip-back\src\main\java\com\vbsoft\Utils\HibernateUtils.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Plant.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Services\SamsungDeliveryService.java
 D:\Projects\flip-back\src\main\java\com\vbsoft\Modeles\In\Enums\FreightMethodCode.java

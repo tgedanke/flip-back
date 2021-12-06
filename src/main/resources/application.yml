@@ -3,7 +3,6 @@ spring:
     driver-class-name: net.sourceforge.jtds.jdbc.Driver
     username: edi
     password: ide
-    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-test-query: select 1
@@ -30,3 +29,17 @@ logging:
       hibernate: error
       springframework-web: error
     com.vbsoft: error
+---
+spring:
+  config:
+    activate:
+      on-profile: debug
+  datasource:
+    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: jdbc:jtds:sqlserver://rocket/edi

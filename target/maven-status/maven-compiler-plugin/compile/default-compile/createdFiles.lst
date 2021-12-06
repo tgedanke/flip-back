@@ -19,6 +19,7 @@ com\vbsoft\Modeles\In\Material.class
 com\vbsoft\App.class
 com\vbsoft\Modeles\In\Plant.class
 com\vbsoft\Modeles\In\RelatedDocumentNumber.class
+com\vbsoft\Modeles\Repositiries\DeliveryDAO.class
 com\vbsoft\Modeles\In\CargoInformation.class
 com\vbsoft\Modeles\In\Enums\RelatedOrganizationCode.class
 com\vbsoft\Modeles\In\Enums\IncotermsCode.class
@@ -35,7 +36,6 @@ com\vbsoft\Modeles\Out\ACKANSD\ACKANSDelivery.class
 com\vbsoft\Modeles\In\Enums\RelatedDocumentCode.class
 com\vbsoft\Modeles\In\TotalCargoInformation.class
 com\vbsoft\Modeles\In\PONumber.class
-com\vbsoft\Configs\App\XmlConfig.class
 com\vbsoft\Modeles\In\CargoInformationPKG.class
 com\vbsoft\Utils\Tools.class
 com\vbsoft\Modeles\In\Enums\FreightMethodCode.class
@@ -43,12 +43,9 @@ com\vbsoft\Modeles\Out\GENRES\GENRESInfoListDelivery.class
 com\vbsoft\Modeles\Out\GENRES\GENRESDelivery.class
 com\vbsoft\Modeles\In\Enums\CountryCode.class
 com\vbsoft\Controller\ServiceExceptionHandler.class
-com\vbsoft\Configs\App\ContentConfig.class
 com\vbsoft\Modeles\In\Enums\MessageFunctionCode.class
 com\vbsoft\Exceptions\ServiceException.class
 com\vbsoft\Modeles\In\RelatedDocument.class
 com\vbsoft\Configs\Service\ServiceConfig.class
-com\vbsoft\Utils\HibernateUtils.class
 com\vbsoft\Modeles\In\Enums\TransportationTypeCode.class
-com\vbsoft\Utils\HibernateUtils$Rules.class
 com\vbsoft\Modeles\In\Enums\PaymentMethodCode.class

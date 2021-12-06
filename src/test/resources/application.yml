@@ -3,15 +3,27 @@ spring:
     driver-class-name: net.sourceforge.jtds.jdbc.Driver
     username: edi
     password: ide
-    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
   jpa:
     show-sql: true
     generate-ddl: false
     hibernate:
       ddl-auto: create-drop
     database: sql_server
-  profiles:
-    active: debug
-entitymanager.packagesToScan: com.vbsoft.Modeles
 logging.level.org.springframework.web: ERROR
 logging.level.org.hibernate: ERROR
+
+---
+spring:
+  config:
+    activate:
+      on-profile: debug
+  datasource:
+    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
+
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+  datasource:
+    url: jdbc:jtds:sqlserver://rocket/edi

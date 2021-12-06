@@ -1,8 +1,0 @@
-spring:
-  datasource:
-    driver-class-name: net.sourceforge.jtds.jdbc.Driver
-    username: edi
-    password: ide
-    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
-  profiles:
-    active: debug
