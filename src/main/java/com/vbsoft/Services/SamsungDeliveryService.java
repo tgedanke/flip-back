@@ -5,9 +5,9 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,25 +21,49 @@ import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.Objects;
 
 @Service
+@Slf4j
 public class SamsungDeliveryService {
 
-    @Autowired
-    private DeliveryDAO deliveryDAO;
+    /**
+     * Delivery dao.
+     */
+    private final DeliveryDAO deliveryDAO;
 
+    /**
+     * Samsung answer server url.
+     */
+    @Getter
     private final String URL = "https://dev.samsungedi.com:29443/http/handler?SenderCode=lsp_flippost";
-    private final Logger LOG = LoggerFactory.getLogger(SamsungDeliveryService.class);
 
+    /**
+     * Service constructor.
+     * @param deliveryDAO Delivery dao
+     */
+    @Autowired
+    public SamsungDeliveryService(DeliveryDAO deliveryDAO) {
+        this.deliveryDAO = deliveryDAO;
+    }
+
+    /**
+     * Get package item by document number.
+     * @param number Document number
+     * @return Package item
+     */
     public PKFInfo getRequestByDocumentNumber(String number) {
         return this.deliveryDAO.findByDocumentNumber(number);
     }
 
+    /**
+     * Save sumsung request to file.
+     * @param REQUEST_BODY Package item
+     * @throws IOException Throws file read exception
+     */
     public void saveDeliveryToFile(final PKFInfo REQUEST_BODY) throws IOException {
         XmlMapper mapper = new XmlMapper();
         String fileName = "/%s_SAMSUNG.xml".formatted(new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date()));
@@ -49,6 +73,10 @@ public class SamsungDeliveryService {
         mapper.writeValue(Paths.get(outputDir + fileName).toFile(), REQUEST_BODY);
     }
 
+    /**
+     * Save package item to DB.
+     * @param REQUEST_BODY Package item
+     */
     public void saveSamsungRequest(final PKFInfo REQUEST_BODY) {
         REQUEST_BODY.getBusinessType().setInfo(REQUEST_BODY);
         REQUEST_BODY.getDivision().setInfo(REQUEST_BODY);
@@ -64,7 +92,12 @@ public class SamsungDeliveryService {
         deliveryDAO.save(REQUEST_BODY);
     }
 
-
+    /**
+     * Return success answer.
+     * @param REQUEST_BODY Package item
+     * @return ACKANS
+     * @throws JsonProcessingException Throws JSON formatting exception
+     */
     public String sendSuccessMessage(final PKFInfo REQUEST_BODY) throws JsonProcessingException {
         XmlMapper mapper = new XmlMapper();
         ACKANSDelivery answer = new ACKANSDelivery();
@@ -95,7 +128,7 @@ public class SamsungDeliveryService {
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(URL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
-            LOG.info("""
+            log.info("""
                             Ответ на сервер самсунга отправлен.
                             Url - '%s'.
                             Код ответа - '%d'
@@ -107,7 +140,7 @@ public class SamsungDeliveryService {
                             response.code(),
                             response.code()));
             if(response.code() != 200) {
-                LOG.error("""
+                log.error("""
                             Ответ от сервера самсунг отличается от ожидаемого.
                             Url - '%s'.
                             Код ответа - '%d'
@@ -116,9 +149,9 @@ public class SamsungDeliveryService {
                         URL,
                         response.code()));
             }
-            LOG.info(response.body().string());
+            log.info(Objects.requireNonNull(response.body()).string());
         } catch (IOException e) {
-            LOG.error("""
+            log.error("""
                             Ошибка чтения ответа от сервера самсунг.
                             Url - '%s'.
                             Сообщение - '%s'
@@ -126,7 +159,7 @@ public class SamsungDeliveryService {
                     URL,
                     e.getMessage()));
         } catch (Exception ex) {
-            LOG.error("""
+            log.error("""
                             Необработанная ошибка при посылки запроса на сервер самсунг.
                             Url - '%s'.
                             Сообщение - '%s'
@@ -139,12 +172,12 @@ public class SamsungDeliveryService {
     private static final TrustManager[] trustAllCerts = new TrustManager[] {
             new X509TrustManager() {
                 @Override
-                public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                public void checkClientTrusted(X509Certificate[] chain, String authType) {
 
                 }
 
                 @Override
-                public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                public void checkServerTrusted(X509Certificate[] chain, String authType) {
 
                 }
 

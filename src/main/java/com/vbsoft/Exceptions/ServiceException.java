@@ -38,8 +38,7 @@ public class ServiceException extends Exception {
         model.setMessageSenderName(REQUEST_BODY.getSenderName());
         model.setReceiverIdentifier(REQUEST_BODY.getReceiverIdentifier());
         model.setMessageSenderName(REQUEST_BODY.getReceiverName());
-        // TODO: 25.08.2021 Как формируется номер сообщения
-        model.setMessageNumber("a");
+        model.setMessageNumber(REQUEST_BODY.getNumber());
         model.setDocumentNumber(REQUEST_BODY.getDocumentNumber());
         model.setDocumentDate(REQUEST_BODY.getDocumentDate());
         // TODO: 25.08.2021 Подумать что такое предварительный документ и его номер

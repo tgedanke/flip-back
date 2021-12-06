@@ -4,7 +4,6 @@ com\vbsoft\Modeles\In\CodeDescription.class
 com\vbsoft\Services\SamsungDeliveryService.class
 com\vbsoft\Modeles\In\Enums\BusinessTypeCode.class
 com\vbsoft\Services\SamsungDeliveryService$1.class
-com\vbsoft\Configs\Service\DebugServiceConfig.class
 com\vbsoft\Modeles\In\RelatedOrganization.class
 com\vbsoft\Modeles\In\ReferenceOrderType.class
 com\vbsoft\Modeles\In\OrgItem.class
@@ -23,7 +22,6 @@ com\vbsoft\Modeles\Repositiries\DeliveryDAO.class
 com\vbsoft\Modeles\In\CargoInformation.class
 com\vbsoft\Modeles\In\Enums\RelatedOrganizationCode.class
 com\vbsoft\Modeles\In\Enums\IncotermsCode.class
-com\vbsoft\Configs\Service\ProductionServiceConfig.class
 com\vbsoft\Modeles\Out\TRKINF\TRKINF.class
 com\vbsoft\Modeles\Out\TRKINF\MatList.class
 com\vbsoft\Modeles\In\StorageLocation.class
@@ -46,6 +44,5 @@ com\vbsoft\Controller\ServiceExceptionHandler.class
 com\vbsoft\Modeles\In\Enums\MessageFunctionCode.class
 com\vbsoft\Exceptions\ServiceException.class
 com\vbsoft\Modeles\In\RelatedDocument.class
-com\vbsoft\Configs\Service\ServiceConfig.class
 com\vbsoft\Modeles\In\Enums\TransportationTypeCode.class
 com\vbsoft\Modeles\In\Enums\PaymentMethodCode.class
