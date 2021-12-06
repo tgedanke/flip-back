@@ -29,6 +29,8 @@ logging:
       hibernate: error
       springframework-web: error
     com.vbsoft: error
+  file:
+    name: logs/servicelog.log
 ---
 spring:
   config:
