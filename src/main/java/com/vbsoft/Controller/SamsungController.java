@@ -154,8 +154,8 @@ public class SamsungController {
      * Get запрос (неактивен).
      * @return Ответ клиенту
      */
-    @GetMapping(value = "/{document}")
-    public String get(@PathVariable String document) throws JsonProcessingException {
+    @GetMapping(params = {"document"})
+    public String get(@RequestParam String document) throws JsonProcessingException {
         return this.service.sendSuccessMessage(this.service.getRequestByDocumentNumber(document));
     }
 
