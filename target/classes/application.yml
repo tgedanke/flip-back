@@ -25,10 +25,11 @@ spring:
     active: debug
 logging:
   level:
+    root: error
     org:
       hibernate: error
       springframework-web: error
-    com.vbsoft: error
+    com.vbsoft: info
   file:
     name: logs/servicelog.log
 ---

@@ -25,6 +25,7 @@ spring:
     active: debug
 logging:
   level:
+    root: error
     org:
       hibernate: error
       springframework-web: error
