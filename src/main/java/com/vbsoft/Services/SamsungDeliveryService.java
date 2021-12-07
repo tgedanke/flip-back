@@ -23,8 +23,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -56,7 +59,8 @@ public class SamsungDeliveryService {
      * @return Package item
      */
     public PKFInfo getRequestByDocumentNumber(String number) {
-        return this.deliveryDAO.findByDocumentNumber(number);
+        List<PKFInfo> infoList = this.deliveryDAO.findByDocumentNumber(number).parallelStream().sorted(Comparator.comparing(PKFInfo::getDocumentDate)).collect(Collectors.toList());
+        return infoList.get(infoList.size() - 1);
     }
 
     /**
