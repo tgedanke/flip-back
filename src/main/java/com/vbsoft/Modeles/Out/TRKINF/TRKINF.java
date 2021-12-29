@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.vbsoft.Modeles.In.Enums.PackingQuantityCode;
 import com.vbsoft.Modeles.Out.GENRES.GENRESInfoListDelivery;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -89,7 +90,7 @@ public class TRKINF {
     private Date relatedDocumentDate;
 
     @JacksonXmlProperty(localName = "TrackingType")
-    private String trackingType;
+    private String trackingType = "PACK";
 
     @JacksonXmlProperty(localName = "PackingNo")
     private String packingNo;
@@ -98,7 +99,7 @@ public class TRKINF {
     private int totalQuantity;
 
     @JacksonXmlProperty(localName = "TotalQuantityCode")
-    private String totalQuantityCode;
+    private PackingQuantityCode totalQuantityCode;
 
     @JacksonXmlProperty(localName = "TotalVolume")
     private float totalVolume;
@@ -110,13 +111,13 @@ public class TRKINF {
     private float totalGrossWeight;
 
     @JacksonXmlProperty(localName = "TotalGrossWeightCode")
-    private String totalGrossWeightCode = "KG";
+    private PackingQuantityCode totalGrossWeightCode = PackingQuantityCode.Kilogram;
 
     @JacksonXmlProperty(localName = "TotalChargeableWeight")
     private float totalChargeableWeight;
 
     @JacksonXmlProperty(localName = "TotalChargeableWeightCode")
-    private String totalChargeableWeightCode = "KG";
+    private PackingQuantityCode totalChargeableWeightCode = PackingQuantityCode.Kilogram;
 
     @JacksonXmlElementWrapper(localName = "EvnList")
     @JacksonXmlProperty(localName = "EvnItem")

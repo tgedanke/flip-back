@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-001.yaml
+  - changeSet:
+      id: 1
+      author: vd.zinovev
+      comment: добавление таблицы для трека
+      changes:
+        - createTable:
+            tableName: FlippostTrack
+            columns:
+              - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: WB_NO
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: WB_NO
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TRK_TYPE
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: TRK_DATE
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: DESCRIPTION
+                  type: varchar(200)
+                  constraints:
+                    nullable: true

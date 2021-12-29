@@ -11,4 +11,6 @@ public interface DeliveryDAO extends CrudRepository<PKFInfo, Long> {
 
     List<PKFInfo> findByDocumentNumber(String number);
 
+    PKFInfo findFirstByDocumentNumber(String number);
+
 }

@@ -2,6 +2,7 @@ package com.vbsoft.Modeles.Out.TRKINF;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import com.vbsoft.Modeles.In.Enums.PackingQuantityCode;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -32,7 +33,7 @@ public class MatList {
     private int quantity;
 
     @JacksonXmlProperty(localName = "QuantityCode")
-    private String quantityCode;
+    private PackingQuantityCode quantityCode;
 
     @JacksonXmlProperty(localName = "Volume")
     private float volume;
@@ -44,13 +45,13 @@ public class MatList {
     private float GrossWeight;
 
     @JacksonXmlProperty(localName = "GrossWeightCode")
-    private String grossWeightCode = "KG";
+    private PackingQuantityCode grossWeightCode = PackingQuantityCode.Kilogram;
 
     @JacksonXmlProperty(localName = "ChargeableWeight")
     private float chargeableWeight;
 
     @JacksonXmlProperty(localName = "ChargeableWeightCode")
-    private String chargeableWeightCode = "KG";
+    private PackingQuantityCode chargeableWeightCode = PackingQuantityCode.Kilogram;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)

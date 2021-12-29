@@ -116,12 +116,71 @@
       <version>3.9.0</version>
     </dependency>
 
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>2.1.11</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-bean-validators</artifactId>
+      <version>3.0.0</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>31.0.1-jre</version>
+    </dependency>
+
+      <dependency>
+          <groupId>org.liquibase</groupId>
+          <artifactId>liquibase-core</artifactId>
+          <version>4.6.2</version>
+      </dependency>
+
   </dependencies>
 
 
   <build>
     <finalName>SamsungAPIService</finalName>
     <plugins>
+      <plugin>
+        <groupId>io.swagger</groupId>
+        <artifactId>swagger-codegen-maven-plugin</artifactId>
+        <version>3.0.0-rc1</version>
+        <configuration>
+          <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
+          <language>java</language>
+          <configOptions>
+            <sourceFolder>src/gen/java/main</sourceFolder>
+          </configOptions>
+          <output>${project.build.directory}/API</output>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>compile</phase>
+            <configuration>
+              <library>resttemplate</library>
+              <modelPackage>com.vbsoft.Modeles</modelPackage>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,7 +1,9 @@
 package com.vbsoft;
 
+import com.vbsoft.Services.SamsungTrackService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Root application class.
@@ -15,7 +17,8 @@ public class App
      */
     public static void main( String[] args )
     {
-        SpringApplication.run(App.class, args);
+        ConfigurableApplicationContext application = SpringApplication.run(App.class, args);
+        application.getBean("SamsungTrackService", SamsungTrackService.class).start();
     }
 
 }

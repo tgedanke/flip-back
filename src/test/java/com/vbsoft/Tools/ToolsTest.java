@@ -7,9 +7,5 @@ import org.junit.jupiter.api.Test;
 
 public class ToolsTest {
 
-    @Test
-    public void toolsCheck() {
-        Assertions.assertNotNull(Tools.getApplicationConfigContext(), "Не удалось получить контекст прилодения");
-    }
 
 }
