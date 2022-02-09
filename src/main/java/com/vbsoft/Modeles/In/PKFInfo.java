@@ -135,6 +135,11 @@ public class PKFInfo implements Serializable {
     @JacksonXmlProperty(localName = "BusinessType")
     private BusinessType businessType;
 
+    public void setBusinessType(BusinessType businessType) {
+        this.businessType = businessType;
+        this.businessType.setInfo(this);
+    }
+
     /**
      * SAP Material Division.
      */
@@ -142,12 +147,22 @@ public class PKFInfo implements Serializable {
     @JacksonXmlProperty(localName = "Division")
     private Division division;
 
+    public void setDivision(Division division) {
+        this.division = division;
+        this.division.setInfo(this);
+    }
+
     /**
      * Документа основания.
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
     @JacksonXmlProperty(localName = "RelatedDocument")
     private RelatedDocument relatedDocument;
+
+    public void setRelatedDocument(RelatedDocument relatedDocument) {
+        this.relatedDocument = relatedDocument;
+        this.relatedDocument.setInfo(this);
+    }
 
     /**
      * Номер документа основания.
@@ -157,12 +172,22 @@ public class PKFInfo implements Serializable {
     @JacksonXmlProperty(localName = "RelatedDocumentNumber")
     private RelatedDocumentNumber relatedDocumentNumber;
 
+    public void setRelatedDocumentNumber(RelatedDocumentNumber relatedDocumentNumber) {
+        this.relatedDocumentNumber = relatedDocumentNumber;
+        this.relatedDocumentNumber.setInfo(this);
+    }
+
     /**
      * Тип доставки (структура).
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)
     @JacksonXmlProperty(localName = "TransportationType")
     private TransportationType transportationType;
+
+    public void setTransportationType(TransportationType transportationType) {
+        this.transportationType = transportationType;
+        this.transportationType.setInfo(this);
+    }
 
     /**
      * Название транспортного средства 1.
@@ -198,13 +223,13 @@ public class PKFInfo implements Serializable {
      * Форма оплаты 1.
      */
     @JacksonXmlProperty(localName = "PaymentMethod1")
-    private PaymentMethodCode paymentMethod1;
+    private PaymentMethodCode paymentMethod1 = PaymentMethodCode.Cheque;
 
     /**
      * Форма оплаты 2.
      */
     @JacksonXmlProperty(localName = "PaymentMethod2")
-    private PaymentMethodCode paymentMethod2;
+    private PaymentMethodCode paymentMethod2 = PaymentMethodCode.Cash;
 
     /**
      * Форма оплаты 3.
@@ -270,13 +295,27 @@ public class PKFInfo implements Serializable {
     @JacksonXmlProperty(localName = "TotalCargoInformation")
     private TotalCargoInformation totalCargoInformation;
 
+    public void setTotalCargoInformation(TotalCargoInformation totalCargoInformation) {
+        this.totalCargoInformation = totalCargoInformation;
+        this.totalCargoInformation.setInfo(this);
+    }
+
     /**
      * Список получателей.
      */
     @JacksonXmlElementWrapper(localName = "OrgList")
     @JacksonXmlProperty(localName = "OrgItem")
-    @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true, targetEntity = OrgItem.class)
     private List<OrgItem> orgItems = new LinkedList<>();
+
+    /**
+     * Запись Список получателей.
+     * @param orgItems Список получателей
+     */
+    public void setOrgItems(List<OrgItem> orgItems) {
+        orgItems.forEach(item -> item.setInfo(this));
+        this.orgItems = orgItems;
+    }
 
     /**
      * Информация об отправителе и маршруте.
@@ -286,19 +325,39 @@ public class PKFInfo implements Serializable {
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LocItem> locItems = new LinkedList<>();
 
+    public void setLocItems(List<LocItem> locItems) {
+        this.locItems = locItems;
+        this.locItems.forEach(item -> item.setInfo(this));
+    }
+
     @JacksonXmlElementWrapper(localName = "RefList")
     @JacksonXmlProperty(localName = "RefItem")
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefItem> refItems = new LinkedList<>();
+
+    public void setRefItems(List<RefItem> refItems) {
+        this.refItems = refItems;
+        this.refItems.forEach(item -> item.setInfo(this));
+    }
 
     @JacksonXmlElementWrapper(localName = "MatList")
     @JacksonXmlProperty(localName = "MatItem")
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MatItem> matItems = new LinkedList<>();
 
+    public void setMatItems(List<MatItem> matItems) {
+        this.matItems = matItems;
+        this.pkgItems.forEach(pkgItem -> pkgItem.setInfo(this));
+    }
+
     @JacksonXmlElementWrapper(localName = "PkgList")
     @JacksonXmlProperty(localName = "PkgItem")
     @OneToMany(mappedBy = "info", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PkgItem> pkgItems = new LinkedList<>();
 
+
+    public void setPkgItems(List<PkgItem> pkgItems) {
+        this.pkgItems = pkgItems;
+        this.pkgItems.forEach(item -> item.setInfo(this));
+    }
 }

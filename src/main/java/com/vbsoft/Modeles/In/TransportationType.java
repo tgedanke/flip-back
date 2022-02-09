@@ -38,13 +38,26 @@ public class TransportationType {
      * Код типа доставки.
      */
     @JacksonXmlProperty(localName = "Code")
-    private TransportationTypeCode code;
+    private TransportationTypeCode code = TransportationTypeCode.Train;
 
     /**
      * Описание типа доставки.
      */
     @JacksonXmlProperty(localName = "CodeDescription")
     private String codeDescription;
+
+    /**
+     * Тип доставки флиппост.
+     */
+    @JsonIgnore
+    private String flippostTransportationCode;
+
+    public String getFlippostTransportationCode() {
+        if(this.flippostTransportationCode == null) {
+            this.flippostTransportationCode = this.code.getFlippostValue();
+        }
+        return flippostTransportationCode;
+    }
 
     /**
      * Получает значение описания по умолчанию.

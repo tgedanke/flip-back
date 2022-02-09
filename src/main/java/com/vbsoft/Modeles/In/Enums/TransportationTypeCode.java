@@ -14,109 +14,109 @@ import lombok.Getter;
 public enum TransportationTypeCode {
 
     @JsonProperty("01")
-    Truck ("Truck"),
+    Truck ("Truck", "CAR"),
 
     @JsonProperty("02")
-	Mail ("Mail"),
+	Mail ("Mail", "ST"),
 
     @JsonProperty("03")
-	Rail ("Rail"),
+	Rail ("Rail", "TRA"),
 
     @JsonProperty("04")
-	Sea ("Sea"),
+	Sea ("Sea", "AF"),
 
     @JsonProperty("05")
-	Air ("Air"),
+	Air ("Air", "AIR"),
 
     @JsonProperty("C1")
-    FCLRail ("FCL-Rail"),
+    FCLRail ("FCL-Rail", "TRA"),
 
     @JsonProperty("C2")
-    LCLRail ("LCL-Rail"),
+    LCLRail ("LCL-Rail", "TRA"),
 
     @JsonProperty("C3")
-    RailAir ("Rail-Air"),
+    RailAir ("Rail-Air", "AIR"),
 
     @JsonProperty("C4")
-    FTLAir ("FTL-Air"),
+    FTLAir ("FTL-Air", "AIR"),
 
     @JsonProperty("C5")
-    LTLAir ("LTL-Air"),
+    LTLAir ("LTL-Air", "AIR"),
 
     @JsonProperty("C6")
-    FTLBarge ("FTL-Barge"),
+    FTLBarge ("FTL-Barge", "AF"),
 
     @JsonProperty("C7")
-    LTLBarge ("LTL-Barge"),
+    LTLBarge ("LTL-Barge", "AF"),
 
     @JsonProperty("C8")
-    SeaAir ("Sea-Air"),
+    SeaAir ("Sea-Air", "AF"),
 
     @JsonProperty("C9")
-    SeaTrain ("Sea-Train"),
+    SeaTrain ("Sea-Train", "AF"),
 
     @JsonProperty("F1")
-    TrailerOnFlatcar ("Trailer On Flatcar"),
+    TrailerOnFlatcar ("Trailer On Flatcar", "CAR"),
 
     @JsonProperty("F2")
-    ContainerOnFlatcar ("Container On Flatcar"),
+    ContainerOnFlatcar ("Container On Flatcar", "CAR"),
 
     @JsonProperty("M1")
-    MailParcel ("Mail ( Parcel )"),
+    MailParcel ("Mail ( Parcel )", "ST"),
 
     @JsonProperty("M2")
-    Express ("Express"),
+    Express ("Express", "EX"),
 
     @JsonProperty("M3")
-    HandCarry ("Hand Carry"),
+    HandCarry ("Hand Carry", "AF"),
 
     @JsonProperty("NT")
-    NonTransport ("non-transport"),
+    NonTransport ("non-transport", "AF"),
 
     @JsonProperty("P1")
-    Plane ("Plane"),
+    Plane ("Plane", "AIR"),
 
     @JsonProperty("P2")
-    Charter ("Charter"),
+    Charter ("Charter", "AIR"),
 
     @JsonProperty("R1")
-    Train ("Train"),
+    Train ("Train", "TRA"),
 
     @JsonProperty("R2")
-    ExpressTrain ("Express Train"),
+    ExpressTrain ("Express Train", "ICX"),
 
     @JsonProperty("R3")
-    BlackTrain ("Black Train"),
+    BlackTrain ("Black Train", "IC"),
 
     @JsonProperty("S1")
-    ShipFCL ("Ship(FCL)"),
+    ShipFCL ("Ship(FCL)", "AF"),
 
     @JsonProperty("S2")
-    ShipLCL ("Ship(LCL)"),
+    ShipLCL ("Ship(LCL)", "AF"),
 
     @JsonProperty("S3")
-    Barge ("Barge"),
+    Barge ("Barge", "AF"),
 
     @JsonProperty("S4")
-    Ferry ("Ferry"),
+    Ferry ("Ferry", "AF"),
 
     @JsonProperty("T1")
-    FullTruckFTL ("Full Truck(FTL)"),
+    FullTruckFTL ("Full Truck(FTL)", "CAR"),
 
     @JsonProperty("T2")
-    ThanTruckLTL ("Le. Than Truck(LTL)"),
+    ThanTruckLTL ("Le. Than Truck(LTL)", "CAR"),
 
     @JsonProperty("T3")
-    FullContainerFCL ("Full Container(FCL)"),
+    FullContainerFCL ("Full Container(FCL)", "CAR"),
 
     @JsonProperty("T4")
-    TnContLCL ("Le. Th. Cont.(LCL)"),
+    TnContLCL ("Le. Th. Cont.(LCL)", "AF"),
 
     @JsonProperty("T5")
-    TeamDrivers ("Team-Drivers"),
+    TeamDrivers ("Team-Drivers", "AF"),
 
     @JsonProperty("WM")
-    WareHouseFREINVReceivingOnly ("WM	WareHouse ( FREINV receiving Only )");
+    WareHouseFREINVReceivingOnly ("WM	WareHouse ( FREINV receiving Only )", "AF");
 
     /**
      * Значение enum.
@@ -125,10 +125,17 @@ public enum TransportationTypeCode {
     private final String value;
 
     /**
+     * Ассоциация с флиппост.
+     */
+    @Getter
+    private final String flippostValue;
+
+    /**
      * Конструктор.
      * @param VAL Текущее значение
      */
-    TransportationTypeCode(String VAL) {
+    TransportationTypeCode(String VAL, String flipVal) {
         this.value = VAL;
+        this.flippostValue = flipVal;
     }
 }

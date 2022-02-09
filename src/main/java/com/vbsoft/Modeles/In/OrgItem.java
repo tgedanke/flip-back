@@ -38,13 +38,19 @@ public class OrgItem {
     /**
      * Информация о компании.
      */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true, targetEntity = RelatedOrganization.class)
     @JacksonXmlProperty(localName = "RelatedOrganization")
     private RelatedOrganization organizations;
+
+    public void setOrganizations(RelatedOrganization organizations) {
+        this.organizations = organizations;
+        this.organizations.setItem(this);
+    }
 
     /**
      * Информация о доставке.
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "info")
     private PKFInfo info;

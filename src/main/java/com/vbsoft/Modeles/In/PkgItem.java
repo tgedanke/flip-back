@@ -38,6 +38,12 @@ public class PkgItem {
     @JacksonXmlProperty(localName = "CargoInformation")
     private CargoInformationPKG cargoInformation;
 
+    public void setCargoInformation(CargoInformationPKG cargoInformation) {
+        this.cargoInformation = cargoInformation;
+        this.cargoInformation.setItem(this);
+    }
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "info")
     private PKFInfo info;

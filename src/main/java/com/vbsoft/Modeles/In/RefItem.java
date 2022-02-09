@@ -26,14 +26,25 @@ public class RefItem {
     @JacksonXmlProperty(localName = "ReferenceDocumentNumber")
     private ReferenceDocument referenceDocument;
 
+    public void setReferenceDocument(ReferenceDocument referenceDocument) {
+        this.referenceDocument = referenceDocument;
+        this.referenceDocument.setItem(this);
+    }
+
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
     @JoinColumn(name = "ReferenceOrderType")
     @JacksonXmlProperty(localName = "ReferenceOrderType")
     private ReferenceOrderType referenceOrderType;
 
+    public void setReferenceOrderType(ReferenceOrderType referenceOrderType) {
+        this.referenceOrderType = referenceOrderType;
+        this.referenceOrderType.setItem(this);
+    }
+
     @JacksonXmlProperty(localName = "Remark")
     private String remark;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "info")
     private PKFInfo info;

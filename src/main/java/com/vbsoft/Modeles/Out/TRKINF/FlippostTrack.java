@@ -3,14 +3,15 @@ package com.vbsoft.Modeles.Out.TRKINF;
 import lombok.Data;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity(name = "FlippostTrack")
 @Data
 public class FlippostTrack {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
 

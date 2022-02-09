@@ -47,6 +47,7 @@ public class Material {
     @JacksonXmlProperty(localName = "BuyerMaterial")
     private String buyerMaterial;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "materialID")
     private MatItem item;

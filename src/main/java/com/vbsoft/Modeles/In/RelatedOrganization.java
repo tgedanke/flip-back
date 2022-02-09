@@ -147,6 +147,6 @@ public class RelatedOrganization {
      */
     @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "OrgItem")
+    @JoinColumn(name = "OrgItem", nullable = false)
     private OrgItem item;
 }

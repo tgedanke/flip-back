@@ -42,9 +42,15 @@ public class LocItem {
     @JacksonXmlProperty(localName = "RoutingInformation")
     private RoutingInformation routingInformation;
 
+    public void setRoutingInformation(RoutingInformation routingInformation) {
+        this.routingInformation = routingInformation;
+        this.routingInformation.setItem(this);
+    }
+
     /**
      * Информация о доставке.
      */
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "info")
     private PKFInfo info;
