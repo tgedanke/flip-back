@@ -18,7 +18,8 @@ public class App
     public static void main( String[] args )
     {
         ConfigurableApplicationContext application = SpringApplication.run(App.class, args);
-        application.getBean("SamsungTrackService", SamsungTrackService.class).start();
+
+        application.getBean(SamsungTrackService.class).start();
     }
 
 }
