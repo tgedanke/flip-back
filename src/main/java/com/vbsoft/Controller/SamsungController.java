@@ -7,8 +7,6 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Services.SamsungDeliveryService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Info;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +25,7 @@ import java.util.Objects;
  */
 @CrossOrigin
 @RestController
-@RequestMapping(value = "/test",
+@RequestMapping(
         produces = MediaType.TEXT_XML_VALUE,
         consumes = MediaType.TEXT_XML_VALUE)
 @Slf4j
