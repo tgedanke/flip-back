@@ -33,6 +33,9 @@ logging:
   file:
     name: logs/servicelog.log
 ---
+server:
+  servlet:
+    context-path: /test
 spring:
   config:
     activate:
@@ -40,6 +43,9 @@ spring:
   datasource:
     url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
 ---
+server:
+  servlet:
+    context-path: /prod
 spring:
   config:
     activate:
