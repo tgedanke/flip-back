@@ -33,9 +33,6 @@ logging:
   file:
     name: logs/servicelog.log
 ---
-server:
-  servlet:
-    context-path: /test
 spring:
   config:
     activate:
@@ -43,12 +40,29 @@ spring:
   datasource:
     url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
 ---
-server:
-  servlet:
-    context-path: /prod
 spring:
   config:
     activate:
-      on-profile: production
+      on-profile: prod
   datasource:
     url: jdbc:jtds:sqlserver://rocket/edi
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

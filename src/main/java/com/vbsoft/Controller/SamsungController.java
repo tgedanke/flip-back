@@ -26,6 +26,7 @@ import java.util.Objects;
 @CrossOrigin
 @RestController
 @RequestMapping(
+        value = "${spring.profiles.active}",
         produces = MediaType.TEXT_XML_VALUE,
         consumes = MediaType.TEXT_XML_VALUE)
 @Slf4j
