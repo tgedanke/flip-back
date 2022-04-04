@@ -67,7 +67,7 @@ public final class Tools {
                             Тело ответа:
                              '%s'
                             """.formatted(
-                    this.samsungHost,
+                    currentURL,
                     response.code(),
                     response.code()));
             if(response.code() != 200) {
