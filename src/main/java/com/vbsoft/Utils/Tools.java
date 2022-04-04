@@ -77,7 +77,7 @@ public final class Tools {
                             Код ответа - '%d'
                             Ожидаемый код - '200'
                             """.formatted(
-                        this.samsungHost,
+                        currentURL,
                         response.code()));
             }
             log.info(Objects.requireNonNull(response.body()).string());
@@ -87,7 +87,7 @@ public final class Tools {
                             Url - '%s'.
                             Сообщение - '%s'
                             """.formatted(
-                    this.samsungHost,
+                    currentURL,
                     e.getMessage()));
         } catch (Exception ex) {
             log.error("""
@@ -95,7 +95,7 @@ public final class Tools {
                             Url - '%s'.
                             Сообщение - '%s'
                             """.formatted(
-                    this.samsungHost,
+                    currentURL,
                     ex.getMessage()));
         }
     }
