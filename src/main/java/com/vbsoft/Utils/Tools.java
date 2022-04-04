@@ -2,8 +2,10 @@ package com.vbsoft.Utils;
 
 import lombok.extern.log4j.Log4j2;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
@@ -29,8 +31,18 @@ import java.util.Objects;
 @Log4j2
 public final class Tools {
 
+    private final Environment environment;
+
     @Value("${samsung.send.host}")
     private String samsungHost;
+
+    @Value("${samsung.send.host.prod}")
+    private String samsungProdHost;
+
+    @Autowired
+    public Tools(Environment environment) {
+        this.environment = environment;
+    }
 
     /**
      * Отправка ответа обработки заказа на сервер самсунга.
@@ -42,9 +54,10 @@ public final class Tools {
         builder.sslSocketFactory(trustAllSslSocketFactory, (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
         client = builder.build();
+        String currentURL = this.environment.getActiveProfiles()[0].equalsIgnoreCase("prod") ? this.samsungProdHost: this.samsungHost;
         REQUEST_BODY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + REQUEST_BODY;
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
-        Request request = new Request.Builder().url(this.samsungHost).post(body).build();
+        Request request = new Request.Builder().url(currentURL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
             log.info("""
                             Ответ на сервер самсунга отправлен.

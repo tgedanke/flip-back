@@ -39,7 +39,13 @@ public class SamsungDeliveryService {
      * Samsung answer server url.
      */
     @Getter
-    private final String URL = "https://dev.samsungedi.com:29443/http/handler?SenderCode=lsp_flippost";
+    private final String URL = "https://korealogistics.samsungedi.com:9443/http/handler?SenderCode=lsp_flippost";
+
+    /**
+     * Samsung answer server url.
+     */
+    @Getter
+    private final String URL_TEST = "https://koreatest.samsungedi.com:19443/http/handler?SenderCode=lsp_flippost";
 
     /**
      * Service constructor.
