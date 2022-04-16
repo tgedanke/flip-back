@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
+import com.vbsoft.Modeles.Out.GENRES.GENRESDelivery;
+import com.vbsoft.Modeles.Out.GENRES.GENRESInfoListDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import com.vbsoft.Utils.Tools;
 import lombok.Getter;
@@ -121,5 +123,23 @@ public class SamsungDeliveryService {
         this.TOOLS.sendRequestToSamsung(mapper.writeValueAsString(answer));
 
         return mapper.writeValueAsString(answer);
+    }
+
+    public void sendErrorMessage(final PKFInfo REQUEST_BODY, final String MESSAGE) {
+        GENRESDelivery model = new GENRESDelivery();
+        model.setMessageSenderIdentifier(REQUEST_BODY.getSenderIdentifier());
+        model.setMessageSenderName(REQUEST_BODY.getSenderName());
+        model.setReceiverIdentifier(REQUEST_BODY.getReceiverIdentifier());
+        model.setMessageSenderName(REQUEST_BODY.getReceiverName());
+        model.setMessageNumber(REQUEST_BODY.getNumber());
+        model.setDocumentNumber(REQUEST_BODY.getDocumentNumber());
+        model.setDocumentDate(REQUEST_BODY.getDocumentDate());
+        model.setReferenceMessageNumber(REQUEST_BODY.getDocumentNumber());
+        model.setReferenceDocumentNumber(REQUEST_BODY.getDocumentNumber());
+        GENRESInfoListDelivery info = new GENRESInfoListDelivery();
+        info.setGenres(model);
+        info.setSequenceNumber(1);
+        info.setInformation(MESSAGE);
+        model.getInfo().add(info);
     }
 }

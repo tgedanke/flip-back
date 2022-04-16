@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Контоллер обмена.
@@ -53,7 +56,16 @@ public class SamsungController {
      * @return Ответ клиенту
      */
     @PostMapping
-    public String getMessage(@RequestBody String mod) throws ServiceException {
+    public String getMessage(@RequestBody String mod) {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.scheduleAtFixedRate(() -> {
+            this.processRequest(mod);
+            service.shutdown();
+        }, 1,1,  TimeUnit.SECONDS);
+        return "ok";
+    }
+
+    private void processRequest(String mod) {
         PKFInfo model = null;
         try {
             ObjectMapper mapper = new XmlMapper();
@@ -61,7 +73,7 @@ public class SamsungController {
 
             this.service.saveDeliveryToFile(model);
             this.service.saveSamsungRequest(model);
-            return this.service.sendSuccessMessage(model);
+            this.service.sendSuccessMessage(model);
         } catch (JsonMappingException e) {
             e.printStackTrace();
             log.error("""
@@ -93,10 +105,9 @@ public class SamsungController {
                     Сообщение:
                     %s
                     """.formatted(e.getMessage()));
-            throw new ServiceException(Objects.requireNonNull(model), e.getMessage());
+            if(model != null)
+                this.service.sendErrorMessage(model, e.getMessage());
         }
-
-        return null;
     }
 
     /**

@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Unit test for simple App.
@@ -16,26 +19,15 @@ public class AppTest
 {
 
     @Test
-    public void test() throws IOException {
-        System.out.println(Files.createTempDirectory("temp").toFile().getAbsolutePath());
+    public void test() {
+        System.out.println(this.t());
+        System.out.println("g");
     }
 
-    @Test
-    public void t() {
-        Set<Integer> set1 = Set.of(1, 2, 3);
-        Set<Integer> set2 = Set.of(0, 1, 2);
-        Set<Integer> result = new HashSet<>();
-        result.addAll(set1);
-        result.addAll(set2);
-
-        Iterator<Integer> it = result.iterator();
-        while (it.hasNext()) {
-            int temp;
-            if(set2.contains(temp = it.next()) && set1.contains(temp))
-                it.remove();
-        }
-
-        System.out.println(result);
+    public String t() {
+        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        service.schedule(() -> System.out.println("aaaa"), 1,  TimeUnit.SECONDS);
+        return "b";
     }
 
 }
