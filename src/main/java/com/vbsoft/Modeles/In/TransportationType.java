@@ -66,8 +66,6 @@ public class TransportationType {
     public String getCodeDescription() {
         if (this.codeDescription == null & this.code != null)
             this.codeDescription = this.code.getValue();
-
-
         return this.codeDescription;
     }
 }

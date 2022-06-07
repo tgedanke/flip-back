@@ -27,8 +27,10 @@ public class RefItem {
     private ReferenceDocument referenceDocument;
 
     public void setReferenceDocument(ReferenceDocument referenceDocument) {
-        this.referenceDocument = referenceDocument;
-        this.referenceDocument.setItem(this);
+        if(referenceDocument != null) {
+            this.referenceDocument = referenceDocument;
+            this.referenceDocument.setItem(this);
+        }
     }
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
@@ -37,8 +39,10 @@ public class RefItem {
     private ReferenceOrderType referenceOrderType;
 
     public void setReferenceOrderType(ReferenceOrderType referenceOrderType) {
-        this.referenceOrderType = referenceOrderType;
-        this.referenceOrderType.setItem(this);
+        if(referenceOrderType != null) {
+            this.referenceOrderType = referenceOrderType;
+            this.referenceOrderType.setItem(this);
+        }
     }
 
     @JacksonXmlProperty(localName = "Remark")

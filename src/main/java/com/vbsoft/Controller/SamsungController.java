@@ -71,7 +71,7 @@ public class SamsungController {
             ObjectMapper mapper = new XmlMapper();
             model = mapper.readValue(mod,PKFInfo.class);
 
-            this.service.saveDeliveryToFile(model);
+            this.service.saveDeliveryToFile(mod);
             this.service.saveSamsungRequest(model);
             this.service.sendSuccessMessage(model);
         } catch (JsonMappingException e) {

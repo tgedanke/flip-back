@@ -43,8 +43,10 @@ public class LocItem {
     private RoutingInformation routingInformation;
 
     public void setRoutingInformation(RoutingInformation routingInformation) {
-        this.routingInformation = routingInformation;
-        this.routingInformation.setItem(this);
+        if(routingInformation != null) {
+            this.routingInformation = routingInformation;
+            this.routingInformation.setItem(this);
+        }
     }
 
     /**

@@ -30,8 +30,10 @@ public class MatItem {
     private Material material;
 
     public void setMaterial(Material material) {
-        this.material = material;
-        this.material.setItem(this);
+        if(material != null) {
+            this.material = material;
+            this.material.setItem(this);
+        }
     }
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
@@ -40,8 +42,10 @@ public class MatItem {
     private Plant plant;
 
     public void setPlant(Plant plant) {
-        this.plant = plant;
-        this.plant.setItem(this);
+        if(plant != null) {
+            this.plant = plant;
+            this.plant.setItem(this);
+        }
     }
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
@@ -50,8 +54,10 @@ public class MatItem {
     private StorageLocation storageLocation;
 
     public void setStorageLocation(StorageLocation storageLocation) {
-        this.storageLocation = storageLocation;
-        this.storageLocation.setItem(this);
+        if(storageLocation != null) {
+            this.storageLocation = storageLocation;
+            this.storageLocation.setItem(this);
+        }
     }
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
@@ -60,8 +66,10 @@ public class MatItem {
     private CargoInformation cargoInformation;
 
     public void setCargoInformation(CargoInformation cargoInformation) {
-        this.cargoInformation = cargoInformation;
-        this.cargoInformation.setItem(this);
+        if(cargoInformation != null) {
+            this.cargoInformation = cargoInformation;
+            this.cargoInformation.setItem(this);
+        }
     }
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
@@ -70,8 +78,10 @@ public class MatItem {
     private PONumber PONumber;
 
     public void setPONumber(com.vbsoft.Modeles.In.PONumber PONumber) {
-        this.PONumber = PONumber;
-        this.PONumber.setItem(this);
+        if(PONumber != null) {
+            PONumber.setItem(this);
+            this.PONumber = PONumber;
+        }
     }
 
     @JsonIgnore

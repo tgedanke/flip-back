@@ -296,8 +296,10 @@ public class PKFInfo implements Serializable {
     private TotalCargoInformation totalCargoInformation;
 
     public void setTotalCargoInformation(TotalCargoInformation totalCargoInformation) {
-        this.totalCargoInformation = totalCargoInformation;
-        this.totalCargoInformation.setInfo(this);
+        if(totalCargoInformation != null) {
+            this.totalCargoInformation = totalCargoInformation;
+            this.totalCargoInformation.setInfo(this);
+        }
     }
 
     /**
@@ -313,8 +315,10 @@ public class PKFInfo implements Serializable {
      * @param orgItems Список получателей
      */
     public void setOrgItems(List<OrgItem> orgItems) {
-        orgItems.forEach(item -> item.setInfo(this));
-        this.orgItems = orgItems;
+        if(orgItems != null) {
+            orgItems.forEach(item -> item.setInfo(this));
+            this.orgItems = orgItems;
+        }
     }
 
     /**
@@ -326,8 +330,10 @@ public class PKFInfo implements Serializable {
     private List<LocItem> locItems = new LinkedList<>();
 
     public void setLocItems(List<LocItem> locItems) {
-        this.locItems = locItems;
-        this.locItems.forEach(item -> item.setInfo(this));
+        if(locItems != null) {
+            this.locItems = locItems;
+            this.locItems.forEach(item -> item.setInfo(this));
+        }
     }
 
     @JacksonXmlElementWrapper(localName = "RefList")
@@ -336,8 +342,10 @@ public class PKFInfo implements Serializable {
     private List<RefItem> refItems = new LinkedList<>();
 
     public void setRefItems(List<RefItem> refItems) {
-        this.refItems = refItems;
-        this.refItems.forEach(item -> item.setInfo(this));
+        if(refItems != null) {
+            this.refItems.forEach(item -> item.setInfo(this));
+            this.refItems = refItems;
+        }
     }
 
     @JacksonXmlElementWrapper(localName = "MatList")
@@ -346,8 +354,10 @@ public class PKFInfo implements Serializable {
     private List<MatItem> matItems = new LinkedList<>();
 
     public void setMatItems(List<MatItem> matItems) {
-        this.matItems = matItems;
-        this.pkgItems.forEach(pkgItem -> pkgItem.setInfo(this));
+        if(matItems != null) {
+            this.matItems = matItems;
+            this.pkgItems.forEach(pkgItem -> pkgItem.setInfo(this));
+        }
     }
 
     @JacksonXmlElementWrapper(localName = "PkgList")
@@ -357,7 +367,9 @@ public class PKFInfo implements Serializable {
 
 
     public void setPkgItems(List<PkgItem> pkgItems) {
-        this.pkgItems = pkgItems;
-        this.pkgItems.forEach(item -> item.setInfo(this));
+        if(pkgItems != null) {
+            this.pkgItems = pkgItems;
+            this.pkgItems.forEach(item -> item.setInfo(this));
+        }
     }
 }

@@ -10,6 +10,8 @@ import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import com.vbsoft.Utils.Tools;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.util.FileUtil;
+import org.h2.store.fs.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +71,20 @@ public class SamsungDeliveryService {
         List<PKFInfo> infoList = this.DELIVERY_DAO.findByDocumentNumber(number).parallelStream().sorted(Comparator.comparing(PKFInfo::getDocumentDate)).collect(Collectors.toList());
         return infoList.get(infoList.size() - 1);
     }
+
+    /**
+     * Save sumsung request to file.
+     * @param REQUEST_BODY Package item
+     * @throws IOException Throws file read exception
+     */
+    public void saveDeliveryToFile(final String REQUEST_BODY) throws IOException {
+        String fileName = "/%s_SAMSUNG.xml".formatted(new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date()));
+        String outputDir = (String) System.getProperties().getOrDefault(
+                "user.dir",
+                Files.createTempDirectory("Request").toFile().getAbsolutePath());
+        FileUtil.writeAsString(Paths.get(outputDir + fileName).toFile(), REQUEST_BODY);
+    }
+
 
     /**
      * Save sumsung request to file.

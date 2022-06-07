@@ -43,8 +43,10 @@ public class OrgItem {
     private RelatedOrganization organizations;
 
     public void setOrganizations(RelatedOrganization organizations) {
-        this.organizations = organizations;
-        this.organizations.setItem(this);
+        if(organizations != null) {
+            this.organizations = organizations;
+            this.organizations.setItem(this);
+        }
     }
 
     /**

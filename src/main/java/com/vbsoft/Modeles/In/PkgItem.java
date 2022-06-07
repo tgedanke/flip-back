@@ -39,8 +39,10 @@ public class PkgItem {
     private CargoInformationPKG cargoInformation;
 
     public void setCargoInformation(CargoInformationPKG cargoInformation) {
-        this.cargoInformation = cargoInformation;
-        this.cargoInformation.setItem(this);
+        if(cargoInformation != null) {
+            this.cargoInformation = cargoInformation;
+            this.cargoInformation.setItem(this);
+        }
     }
 
     @JsonIgnore
