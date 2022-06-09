@@ -15,9 +15,11 @@ import org.h2.store.fs.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
@@ -82,7 +84,16 @@ public class SamsungDeliveryService {
         String outputDir = (String) System.getProperties().getOrDefault(
                 "user.dir",
                 Files.createTempDirectory("Request").toFile().getAbsolutePath());
-        FileUtil.writeAsString(Paths.get(outputDir + fileName).toFile(), REQUEST_BODY);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputDir + fileName), StandardCharsets.UTF_8));
+        try {
+            writer.write(REQUEST_BODY);
+        } catch (Exception ex) {
+            log.error("не удалось записать запрос в файл");
+        } finally {
+            writer.flush();
+            writer.close();
+        }
+
     }
 
 
