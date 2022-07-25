@@ -56,6 +56,7 @@ public final class Tools {
         client = builder.build();
         String currentURL = this.environment.getActiveProfiles()[0].equalsIgnoreCase("prod") ? this.samsungProdHost: this.samsungHost;
         REQUEST_BODY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + REQUEST_BODY;
+        log.info("Тело запроса самсунгу\n" + REQUEST_BODY);
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);
         Request request = new Request.Builder().url(currentURL).post(body).build();
         try (Response response = client.newCall(request).execute()) {
