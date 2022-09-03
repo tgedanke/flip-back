@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    driver-class-name: net.sourceforge.jtds.jdbc.Driver
+    username: edi
+    password: ide
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-test-query: select 1
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: sql_server
+    database-platform: org.hibernate.dialect.SQLServer2008Dialect
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Europe/Moscow
+        defualt_schema: dbo
+  profiles:
+    active: debug
+logging:
+  level:
+    root: error
+    org:
+      hibernate: error
+      springframework-web: error
+    com.vbsoft: info
+  file:
+    name: samsung/logs/servicelog.log
+---
+spring:
+  config:
+    activate:
+      on-profile: debug
+  datasource:
+    url: jdbc:jtds:sqlserver://192.168.56.3:1433/edi
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:jtds:sqlserver://rocket/edi
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect

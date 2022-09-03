@@ -7,65 +7,127 @@ import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESInfoListDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
-import com.vbsoft.Utils.Tools;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.aspectj.util.FileUtil;
-import org.h2.store.fs.FileUtils;
+import com.vbsoft.Utils.SamsungLogger;
+import com.vbsoft.Utils.SamsungTools;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
-@Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@PropertySources({
+        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true),
+        @PropertySource("classpath:Constants.properties")
+})
 public class SamsungDeliveryService {
 
     /**
      * Delivery dao.
      */
-    private final DeliveryDAO DELIVERY_DAO;
-
+    final DeliveryDAO DELIVERY_DAO;
 
     /**
      * Service tools.
      */
-    private final Tools TOOLS;
+    final SamsungTools SamsungTOOLS;
 
     /**
-     * Samsung answer server url.
+     * Лог.
      */
-    @Getter
-    private final String URL = "https://korealogistics.samsungedi.com:9443/http/handler?SenderCode=lsp_flippost";
+    final SamsungLogger log;
 
     /**
-     * Samsung answer server url.
+     * Базовая папка.
+     * <p>
+     * Системная переменная - "base.path".
      */
-    @Getter
-    private final String URL_TEST = "https://koreatest.samsungedi.com:19443/http/handler?SenderCode=lsp_flippost";
+    @Value("#{systemProperties['base.path']}")
+    String BASE_DIR = new File("").getAbsolutePath();
 
     /**
-     * Service constructor.
-     * @param deliveryDAO Delivery dao
-     * @param tools Service tools
+     * Максимальное количество попыток отправить ответ по заказу.
+     * <p>
+     * В файле Constants.properties - "samsung.sent.max.count".
+     */
+    @Value("${samsung.sent.max.count}")
+    Integer TRY_COUNT;
+
+    /**
+     * Путь к сохранению XML файлов заказа.
+     * <p>
+     * В файле Constants.properties - "samsung.delivery.path".
+     */
+    @Value("${samsung.delivery.path}")
+    String DELIVERY_PATH;
+
+    /**
+     * Путь к сохранению ошибочных XML файлов заказа.
+     * <p>
+     * В файле Constants.properties - "samsung.delivery.error".
+     */
+    @Value("${samsung.delivery.error}")
+    String ERROR_PATH;
+
+    /**
+     * Путь к сохранению не сериализованных XML файлов заказа.
+     * <p>
+     * В файле Constants.properties - "samsung.delivery.unserializable".
+     */
+    @Value("${samsung.delivery.unserializable}")
+    String UNSERIALIZABLE_PATH;
+
+    /**
+     * Путь к сохранению не сохранных XML файлов заказа.
+     * <p>
+     * В файле Constants.properties - "samsung.delivery.unsaved".
+     */
+    @Value("${samsung.delivery.unsaved}")
+    String UNSAVED_PATH;
+
+    /**
+     * Путь к сохранению XML файлов заказа с неизвестной ошибкой.
+     * <p>
+     * В файле Constants.properties - "samsung.delivery.unknown".
+     */
+    @Value("${samsung.delivery.unknown}")
+    String UNKNOWN_PATH;
+
+    /**
+     * Конструктор сервиса.
+     *
+     * @param context Контекст Spring
      */
     @Autowired
-    public SamsungDeliveryService(DeliveryDAO deliveryDAO, Tools tools) {
-        this.DELIVERY_DAO = deliveryDAO;
-        this.TOOLS = tools;
+    public SamsungDeliveryService(ApplicationContext context) {
+        this.DELIVERY_DAO = context.getBean(DeliveryDAO.class);
+        this.SamsungTOOLS = context.getBean(SamsungTools.class);
+        this.log = context.getBean(SamsungLogger.class);
     }
 
     /**
      * Get package item by document number.
+     *
      * @param number Document number
      * @return Package item
      */
@@ -75,34 +137,202 @@ public class SamsungDeliveryService {
     }
 
     /**
-     * Save sumsung request to file.
-     * @param REQUEST_BODY Package item
-     * @throws IOException Throws file read exception
+     * Сохраняет файл с заказом.
+     * <p>
+     * Для сохранения в конкретную папку
+     * нужно ввести системную переменную "base.path".
+     * <p>
+     * По умолчанию относительный путь от JAR файла.
+     *
+     * @param REQUEST_BODY Информация о заказе
+     * @return Имя файла.
      */
-    public void saveDeliveryToFile(final String REQUEST_BODY) throws IOException {
-        String fileName = "/%s_SAMSUNG.xml".formatted(new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date()));
-        String outputDir = (String) System.getProperties().getOrDefault(
-                "user.dir",
-                Files.createTempDirectory("Request").toFile().getAbsolutePath());
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputDir + fileName), StandardCharsets.UTF_8));
+    public String saveDeliveryToFile(final String REQUEST_BODY) {
+        String outputDir = this.getGeneratedFileName();
+        log.info("Сохранение заказа в файл - '{}'", outputDir);
+        Path file = Paths.get(outputDir);
+        this.createOrdersDir(file);
         try {
-            writer.write(REQUEST_BODY);
+            Files.createFile(file);
+            Files.writeString(file, REQUEST_BODY, StandardOpenOption.CREATE);
         } catch (Exception ex) {
-            log.error("не удалось записать запрос в файл");
-        } finally {
-            writer.flush();
-            writer.close();
+            log.error("Не удалось сохранить файл заказа - '{}'", file);
+        }
+
+        return file.toString();
+    }
+
+    /**
+     * Создает папку для сохранения заказа в виде XML файлов.
+     *
+     * @param file Файл для сохранения
+     */
+    private void createOrdersDir(Path file) {
+        Path dirs = file.getParent();
+        if (!Files.exists(dirs)) {
+            log.info("Создание родительских папок. Папка - '{}'", dirs);
+            try {
+                Files.createDirectories(dirs);
+            } catch (Exception ex) {
+                log.error("Не удалось создать папки для сохранения файлов заказов. Папка - '{}'", dirs);
+            }
+            log.info("Папка для для сохранения файлов заказов создана");
+        } else {
+            log.info("Папка для создания файлов заказов существует");
+        }
+    }
+
+    /**
+     * Копирует файл с ошибками в определенные папки.
+     *
+     * @param file Имя Файл
+     * @param dest Папка для сортировки
+     */
+    private void copyErrorFiles(String file, String dest) {
+        Path target = Paths.get(file);
+        if (!Files.isRegularFile(target)) {
+            log.warn("Путь '{}' не является файлом. Прерывание копирования", target.toString());
+            return;
+        }
+        dest = this.BASE_DIR + dest;
+        Path destPath = Paths.get(dest);
+        try {
+            if (!Files.exists(destPath)) {
+                log.info("Создание родительских папок. Папка - '{}'", destPath);
+                Files.createDirectories(destPath);
+            } else {
+                log.info("Папка для создания файлов ошибочных заказов существует");
+            }
+            Files.copy(target, Paths.get(destPath + "/" + target.getFileName()));
+        } catch (Exception ex) {
+            log.warn("Не удалось скопировать файл '{}'" +
+                            " в папку для сохранения файлов ошибочных заказов. Папка - '{}'. " +
+                            "Сообщение:\n {}",
+                    target.toString(), destPath, ex.getMessage());
+        }
+        log.info("Файл заказа с ошибками успешно скопирован. Файл - '{}'", destPath + "/" + target.getFileName());
+    }
+
+    public Path getErrors() {
+        LinkedList<Path> paths = new LinkedList<>();
+        try {
+            if (Files.exists(Paths.get(this.BASE_DIR + this.UNSAVED_PATH))) {
+                paths.addAll(Files
+                        .walk(Paths.get(this.BASE_DIR + this.UNSAVED_PATH))
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList()));
+            }
+
+            if (Files.exists(Paths.get(this.BASE_DIR + this.UNSERIALIZABLE_PATH))) {
+                paths.addAll(Files
+                        .walk(Paths.get(this.BASE_DIR + this.UNSERIALIZABLE_PATH))
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList()));
+            }
+
+            if (Files.exists(Paths.get(this.BASE_DIR + this.UNKNOWN_PATH))) {
+                paths.addAll(Files
+                        .walk(Paths.get(this.BASE_DIR + this.UNKNOWN_PATH))
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList()));
+            }
+            if (!paths.isEmpty())
+                this.zipFiles(paths);
+            else
+                return null;
+        } catch (Exception ex) {
+            log.warn("Не удалось создать архив с ошибками. Сообщение:\n '{}'", ex.getMessage());
+            return null;
+        }
+
+
+        Path zip = Paths.get(this.BASE_DIR + this.ERROR_PATH + "/errors.zip");
+        if (Files.exists(zip)) {
+            return zip;
+        } else {
+            log.warn("Не удалось получить файл с ошибками");
+            return null;
         }
 
     }
 
+    private void zipFiles(LinkedList<Path> files) throws IOException {
+        ZipOutputStream stream = new ZipOutputStream(Files.newOutputStream(Paths.get(this.BASE_DIR + this.ERROR_PATH + "/errors.zip")));
+        files.forEach(file -> {
+            ZipEntry entry = new ZipEntry(file.getParent().getFileName() + "/" + file.getFileName());
+            try {
+                stream.putNextEntry(entry);
+                Files.copy(file, stream);
+                stream.closeEntry();
+            } catch (IOException e) {
+                log.warn("Не удалось создать архив с ошибками. Сообщение:\n '{}'", e.getMessage());
+            }
+        });
+        stream.flush();
+        stream.close();
+    }
+
+    /**
+     * Копирует файл заказа в ошибки сериализации.
+     *
+     * @param file Файл заказа
+     */
+    private void createSerializableFile(String file) {
+        log.info("Копирование файла '{}' в ошибки сериализации", file);
+        this.copyErrorFiles(file, this.UNSERIALIZABLE_PATH);
+    }
+
+    /**
+     * Копирует файл заказа в ошибки сохранения.
+     *
+     * @param file Файл заказа
+     */
+    private void createUnsavedFile(String file) {
+        log.info("Копирование файла '{}' в ошибки сохранения", file);
+        this.copyErrorFiles(file, this.UNSAVED_PATH);
+    }
+
+    /**
+     * Копирует файл заказа в необработанные ошибки.
+     *
+     * @param file Файл заказа
+     */
+    private void createUnknownFile(String file) {
+        log.info("Копирование файла '{}' в необработанные ошибки", file);
+        this.copyErrorFiles(file, this.UNKNOWN_PATH);
+    }
+
+    /**
+     * Генерирует имя файла для сохранения.
+     *
+     * @return Сгенерированное имя файла вместе с путем сохранения
+     */
+    private String getGeneratedFileName() {
+        log.info("Генерация имени файла");
+        int s1 = ThreadLocalRandom.current().nextInt(0, 10);
+        int s2 = ThreadLocalRandom.current().nextInt(0, 10);
+        int s3 = ThreadLocalRandom.current().nextInt(0, 10);
+        int s4 = ThreadLocalRandom.current().nextInt(0, 10);
+        int s5 = ThreadLocalRandom.current().nextInt(0, 10);
+        final int[] SALT_ARRAY = new int[]{s1, s2, s3, s4, s5};
+        String SALT = Arrays.toString(SALT_ARRAY)
+                .replaceAll("[\\[\\],\s]", "");
+        String fileName = "/deliveries/samsung/%s_%s_SAMSUNG.xml".formatted(new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date()), SALT);
+        String outputDir = this.BASE_DIR + fileName;
+        log.info("Имя файла сгенерированно. Полный путь - '{}'", outputDir);
+        return outputDir;
+    }
 
     /**
      * Save sumsung request to file.
+     *
      * @param REQUEST_BODY Package item
      * @throws IOException Throws file read exception
      */
     public void saveDeliveryToFile(final PKFInfo REQUEST_BODY) throws IOException {
+
+        log.info("Сохранение файла - ");
+
         XmlMapper mapper = new XmlMapper();
         String fileName = "/%s_SAMSUNG.xml".formatted(new SimpleDateFormat("ddMMyyyy_HHmmss").format(new Date()));
         String outputDir = (String) System.getProperties().getOrDefault(
@@ -112,26 +342,154 @@ public class SamsungDeliveryService {
     }
 
     /**
-     * Save package item to DB.
-     * @param REQUEST_BODY Package item
+     * Сериализует и сохраняет заказ.
+     *
+     * @param order Заказ
      */
-    public void saveSamsungRequest(final PKFInfo REQUEST_BODY) {
-        REQUEST_BODY.getBusinessType().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getDivision().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getRelatedDocument().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getRelatedDocumentNumber().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getTransportationType().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getTotalCargoInformation().setInfo(REQUEST_BODY);
-        REQUEST_BODY.getOrgItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        REQUEST_BODY.getLocItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        REQUEST_BODY.getRefItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        REQUEST_BODY.getMatItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        REQUEST_BODY.getPkgItems().forEach(item -> item.setInfo(REQUEST_BODY));
-        DELIVERY_DAO.save(REQUEST_BODY);
+    public void saveSamsungStringRequest(String order, String fileName) {
+        try {
+            XmlMapper mapper = new XmlMapper();
+            PKFInfo ser = mapper.readValue(order, PKFInfo.class);
+            ser.setFileName(fileName);
+            this.saveSamsungRequest(ser);
+        } catch (JsonProcessingException json) {
+            log.error("Ошибка сериализации заказа. Сообщение:\n {}", json.getMessage());
+            this.createSerializableFile(fileName);
+        } catch (Exception ex) {
+            this.createUnknownFile(fileName);
+            log.error("Ошибка сохранения. Не обработанная ошибка. Сообщение: {}", ex.getMessage());
+        }
+    }
+
+    /**
+     * Сохраняет файл в папку с ошибками.
+     * <p>
+     * Находится в папке: {базовая папка}/samsung/deliveries/error
+     *
+     * @param fileName Имя файла с путем
+     */
+    private void saveToError(String fileName) {
+        try {
+            Path target = Paths.get(fileName);
+            Path dest = Paths.get(this.BASE_DIR + "deliveries/samsung/error/" + target.getFileName());
+            if (!Files.exists(dest.getParent()))
+                Files.createDirectories(dest.getParent());
+            Files.copy(target, dest);
+        } catch (Exception ex) {
+            log.warn("Не удалось перенести файл {} в папку с ошибками", fileName);
+        }
+    }
+
+    public List<Path> getErrorsFiles() {
+        try {
+            Path path = Paths.get(this.BASE_DIR + "deliveries/samsung/error/");
+
+            if (!Files.exists(path)) {
+                log.warn("Папка с ошибками не существует");
+                return new ArrayList<>();
+            }
+
+            Stream<Path> files = Files.walk(path);
+            if (files.findAny().isEmpty()) {
+                log.warn("Папка с ошибками пуста");
+                return new ArrayList<>();
+            }
+
+            return files.filter(Files::isRegularFile).findAny().stream().collect(Collectors.toList());
+
+        } catch (Exception ex) {
+            log.warn("Не удалось получить файлы из папки с ошибками");
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Удалить заказ по ID.
+     *
+     * @param ID ID Заказа
+     */
+    public void deleteOrder(Long ID) {
+        Optional<PKFInfo> optional = this.DELIVERY_DAO.findById(ID);
+        if (optional.isPresent())
+            this.deleteOrder(optional.get());
+        else
+            log.info("Не удалось удалить заказ. Не найдено заказов с ID - '{}'", ID);
+
+    }
+
+    /**
+     * Удаление заказа по модели.
+     *
+     * @param INFO Модель заказа
+     */
+    public void deleteOrder(PKFInfo INFO) {
+        log.info("Удаление заказа - '{}'", INFO.getID());
+        this.DELIVERY_DAO.delete(INFO);
+        log.info("Заказ - {} удален", INFO.getID());
+    }
+
+    /**
+     * Получает файл заказа по имени.
+     *
+     * @param fileName Имя файлов
+     * @return Запрашиваемый файл
+     */
+    public File getDeliveryFile(String fileName) {
+        try {
+            return Paths.get(fileName).toFile();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * Получает заказ по ID.
+     *
+     * @param ID ID заказа
+     * @return Информация о заказе
+     */
+    public PKFInfo getOrderByID(Long ID) {
+        log.info("Получение заказа с ID - {}", ID);
+        Optional<PKFInfo> optional = this.DELIVERY_DAO.findById(ID);
+        if (optional.isPresent()) {
+            log.info("Заказ получен");
+            return optional.get();
+        } else {
+            log.info("Заказа с ID - '{}' не найден в БД", ID);
+            return null;
+        }
+
+    }
+
+    /**
+     * Сохраняет серилизаванный заказ
+     *
+     * @param ORDER Заказ
+     */
+    public void saveSamsungRequest(final PKFInfo ORDER) {
+        try {
+            ORDER.setTryCount(TRY_COUNT);
+            ORDER.getBusinessType().setInfo(ORDER);
+            ORDER.getDivision().setInfo(ORDER);
+            ORDER.getRelatedDocument().setInfo(ORDER);
+            ORDER.getRelatedDocumentNumber().setInfo(ORDER);
+            ORDER.getTransportationType().setInfo(ORDER);
+            ORDER.getTotalCargoInformation().setInfo(ORDER);
+            ORDER.getOrgItems().forEach(item -> item.setInfo(ORDER));
+            ORDER.getLocItems().forEach(item -> item.setInfo(ORDER));
+            ORDER.getRefItems().forEach(item -> item.setInfo(ORDER));
+            ORDER.getMatItems().forEach(item -> item.setInfo(ORDER));
+            ORDER.getPkgItems().forEach(item -> item.setInfo(ORDER));
+            DELIVERY_DAO.save(ORDER);
+        } catch (Exception exception) {
+            log.error("Не удалось сохранить заказ с номером {}. Сообщение:\n {}", ORDER.getDocumentNumber(), exception.getMessage());
+            this.createUnsavedFile(ORDER.getFileName());
+        }
     }
 
     /**
      * Return success answer.
+     *
      * @param REQUEST_BODY Package item
      * @return ACKANS
      * @throws JsonProcessingException Throws JSON formatting exception
@@ -147,7 +505,7 @@ public class SamsungDeliveryService {
         answer.setAckSendDate(new Date());
         answer.setAckSendTime(new Date());
         answer.setInfo("SUCCESS");
-        this.TOOLS.sendRequestToSamsung(mapper.writeValueAsString(answer));
+        this.SamsungTOOLS.sendRequestToSamsung(mapper.writeValueAsString(answer));
 
         return mapper.writeValueAsString(answer);
     }

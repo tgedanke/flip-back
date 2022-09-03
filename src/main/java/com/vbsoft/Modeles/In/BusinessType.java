@@ -2,15 +2,11 @@ package com.vbsoft.Modeles.In;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.vbsoft.Modeles.In.Enums.BusinessTypeCode;
-import com.vbsoft.Modeles.In.Enums.RelatedDocumentCode;
-import com.vbsoft.Utils.Tools;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Arrays;
 
 /**
  * Описание типа процесса.

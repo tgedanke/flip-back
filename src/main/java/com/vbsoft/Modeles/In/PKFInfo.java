@@ -289,6 +289,26 @@ public class PKFInfo implements Serializable {
     private Date estimateDateOfArrival;
 
     /**
+     * Выслан ли ASKANS.
+     */
+    @JsonIgnore
+    private Boolean askansSend = false;
+
+    /**
+     * Дата обработки заказа.
+     */
+    @JsonIgnore
+    private Date processedDate;
+
+    /**
+     * Имя XML файла.
+     */
+    @JsonIgnore
+    private String fileName;
+
+    private Integer tryCount;
+
+    /**
      * Суммарная информация о доставке.
      */
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "info", orphanRemoval = true)

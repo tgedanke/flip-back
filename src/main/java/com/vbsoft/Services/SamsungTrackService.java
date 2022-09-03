@@ -9,7 +9,7 @@ import com.vbsoft.Modeles.Out.TRKINF.MatList;
 import com.vbsoft.Modeles.Out.TRKINF.TRKINF;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
 import com.vbsoft.Modeles.Repositiries.TrackDAO;
-import com.vbsoft.Utils.Tools;
+import com.vbsoft.Utils.SamsungTools;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,13 +42,13 @@ public class SamsungTrackService extends Thread {
     /**
      * Service tools.
      */
-    private final Tools TOOLS;
+    private final SamsungTools SamsungTOOLS;
 
     @Autowired
-    public SamsungTrackService(TrackDAO dao, DeliveryDAO delivery_dao, Tools tools) {
+    public SamsungTrackService(TrackDAO dao, DeliveryDAO delivery_dao, SamsungTools samsungTools) {
         this.DAO = dao;
         this.DELIVERY_DAO = delivery_dao;
-        this.TOOLS = tools;
+        this.SamsungTOOLS = samsungTools;
     }
 
     public void processNewTracks() {
@@ -62,7 +62,7 @@ public class SamsungTrackService extends Thread {
         TRKINF data = this.fillData(delivery, track);
         JsonMapper mapper = new JsonMapper();
         try {
-            this.TOOLS.sendRequestToSamsung(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data));
+            this.SamsungTOOLS.sendRequestToSamsung(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(data));
         } catch (JsonProcessingException e) {
             log.error(e.getMessage(), e);
         }

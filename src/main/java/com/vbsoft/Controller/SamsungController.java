@@ -1,187 +1,215 @@
 package com.vbsoft.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.vbsoft.Exceptions.ServiceException;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Services.SamsungDeliveryService;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
- * Контоллер обмена.
+ * Контроллер обмена.
  *
  * @author vd.zinovev
- * @since 1.0
  * @version 1.0
+ * @since 1.0
  */
 @CrossOrigin
 @RestController
 @RequestMapping(
-        value = "${spring.profiles.active}",
-        produces = MediaType.TEXT_XML_VALUE,
-        consumes = MediaType.TEXT_XML_VALUE)
+        value = "${spring.profiles.active}")
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SamsungController {
 
     /**
      * Сервис обработки.
      */
-    private final SamsungDeliveryService service;
+    SamsungDeliveryService service;
 
     /**
      * Конструктор.
-     * IoC контейнер активен.
-     * @param service Сервис обработки
+     *
+     * @param context Контекст Spring
      */
     @Autowired
-    public SamsungController(SamsungDeliveryService service) {
-        this.service = service;
+    public SamsungController(ApplicationContext context) {
+        this.service = context.getBean(SamsungDeliveryService.class);
     }
 
     /**
-     * POST запрос.
+     * Сохраняет заказ в БД.
+     * !!! Основной метод для продуктива !!!
+     *
      * @param mod Модель тела запроса
      * @return Ответ клиенту
      */
     @PostMapping
     public String getMessage(@RequestBody String mod) {
-        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-        service.scheduleAtFixedRate(() -> {
-            this.processRequest(mod);
-            service.shutdown();
-        }, 1,1,  TimeUnit.SECONDS);
-        return "ok";
-    }
-
-    private void processRequest(String mod) {
-        PKFInfo model = null;
-        try {
-            ObjectMapper mapper = new XmlMapper();
-            model = mapper.readValue(mod,PKFInfo.class);
-
-            this.service.saveDeliveryToFile(mod);
-            this.service.saveSamsungRequest(model);
-            this.service.sendSuccessMessage(model);
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка разметки json ключей.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка конвертации json в модель.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка чтения записи.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (Exception e) {
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Необработанная ошибка.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-            if(model != null)
-                this.service.sendErrorMessage(model, e.getMessage());
-        }
+        String file = this.saveFile(mod);
+        this.service.saveSamsungStringRequest(mod, file);
+        return "processed";
     }
 
     /**
-     * POST запрос.
-     * @param mod Модель тела запроса
-     * @return Ответ клиенту
+     * !!! Метод для отладки. Не работает в продуктиве !!!
+     * <p>
+     * Сохраняет заказ в файл.
+     *
+     * @param order Заказ
+     * @return Статус принятия файла.
      */
-    @PostMapping("only")
-    public String getMessageOnly(@RequestBody String mod) throws ServiceException {
-        PKFInfo model = null;
-        try {
-            ObjectMapper mapper = new XmlMapper();
-            model = mapper.readValue(mod,PKFInfo.class);
+    @PostMapping("order")
+    public String saveOrder(@RequestBody String order) {
+        this.service.saveSamsungStringRequest(order, null);
+        return "processed";
+    }
 
-            this.service.saveDeliveryToFile(model);
-            this.service.saveSamsungRequest(model);
-            return mod;
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка разметки json ключей.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка конвертации json в модель.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Ошибка чтения записи.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-        } catch (Exception e) {
-            log.error("""
-                    Не удалось принять запрос от самсунга.
-                    Необработанная ошибка.
-                    Сообщение:
-                    %s
-                    """.formatted(e.getMessage()));
-            throw new ServiceException(Objects.requireNonNull(model), e.getMessage());
-        }
 
-        return null;
+    /**
+     * !!! Метод для отладки. Не работает в продуктиве !!!
+     *
+     * Сохраняет заказ в файл.
+     *
+     * @param order Заказ
+     * @return Статус принятия файла.
+     */
+    @PostMapping("file")
+    public String saveFile(@RequestBody String order) {
+        return this.service.saveDeliveryToFile(order);
     }
 
     /**
-     * Get запрос (неактивен).
+     * Отправляет ответ ASKANS Samsung вручную.
+     * !!! Метод для продуктива !!!
+     *
      * @return Ответ клиенту
      */
     @GetMapping(params = {"document"})
-    public String get(@RequestParam String document) throws JsonProcessingException {
-        return this.service.sendSuccessMessage(this.service.getRequestByDocumentNumber(document));
+    public ResponseEntity<Object> get(@RequestParam String document) {
+        if(document.equalsIgnoreCase("errors")) {
+            return this.getErrors();
+        } else {
+            return this.getXmlFileByID(document);
+        }
+    }
+
+    private ResponseEntity<Object> getXmlFileByID(String document) {
+        PKFInfo info = this.service.getOrderByID(Long.parseLong(document));
+        if(info == null) {
+            return ResponseEntity
+                    .notFound().build();
+        } else {
+            if(info.getFileName() == null) {
+                return ResponseEntity
+                        .noContent().build();
+            }
+            File file = this.service.getDeliveryFile(info.getFileName());
+            if(file == null) {
+                return ResponseEntity
+                        .notFound().build();
+            }
+            try {
+                return ResponseEntity
+                        .ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .contentLength(file.length())
+                        .body(new InputStreamResource(new FileInputStream(file)));
+            } catch (FileNotFoundException e) {
+                return ResponseEntity
+                        .notFound().build();
+            }
+        }
+
+    }
+
+    private ResponseEntity<Object> getErrors() {
+        Path zip = this.service.getErrors();
+        if(zip == null) {
+            return ResponseEntity
+                    .notFound().build();
+        } else {
+            try {
+                return ResponseEntity
+                        .ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + zip.getFileName() + "\"")
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .contentLength(Files.size(zip))
+                        .body(new InputStreamResource(Files.newInputStream(zip)));
+            } catch (Exception ex) {
+                return ResponseEntity
+                        .badRequest().build();
+            }
+
+
+        }
+
+    }
+
+    /**
+     * Отправляет ответ ASKANS Samsung вручную.
+     * !!! Метод для продуктива !!!
+     *
+     * @return Ответ клиенту
+     */
+    @GetMapping(params = {"documentFile"})
+    public ResponseEntity<Resource> getFile(@RequestParam String ID) {
+        PKFInfo info = this.service.getOrderByID(Long.parseLong(ID));
+        if(info == null) {
+            return ResponseEntity
+                    .notFound().build();
+        } else {
+            if(info.getFileName() == null) {
+                return ResponseEntity
+                        .noContent().build();
+            }
+            File file = this.service.getDeliveryFile(info.getFileName());
+            if(file == null) {
+                return ResponseEntity
+                        .notFound().build();
+            }
+            try {
+                return ResponseEntity
+                        .ok()
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .contentLength(file.length())
+                        .body(new InputStreamResource(new FileInputStream(file)));
+            } catch (FileNotFoundException e) {
+                return ResponseEntity
+                        .notFound().build();
+            }
+        }
     }
 
     /**
      * Delete запрос (неактивен).
+     *
      * @return Ответ клиенту
      */
-    @DeleteMapping
-    public String delete() throws IOException {
-        throw new IOException("test");
+    @DeleteMapping(params = "documentID")
+    public String delete(@RequestParam Long ID) {
+        this.service.deleteOrder(ID);
+        return "processed";
     }
 
     /**
      * Put запрос (неактивен).
+     *
      * @return Ответ клиенту
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
@@ -192,6 +220,7 @@ public class SamsungController {
 
     /**
      * Patch запрос (неактивен).
+     *
      * @return Ответ клиенту
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
