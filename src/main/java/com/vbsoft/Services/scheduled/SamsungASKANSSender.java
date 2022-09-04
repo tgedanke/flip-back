@@ -10,6 +10,7 @@ import com.vbsoft.Utils.SamsungTools;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -43,6 +44,9 @@ public class SamsungASKANSSender {
     ApplicationContext CONTEXT;
 
     SamsungLogger log;
+
+    @Value("${samsung.sender.enable}")
+    String sending = "on";
 
     /**
      * Конструктор.
@@ -95,7 +99,13 @@ public class SamsungASKANSSender {
         answer.setAckSendTime(new Date());
         answer.setInfo("SUCCESS");
         try {
-            int code = this.CONTEXT.getBean(SamsungTools.class).sendRequestToSamsung(mapper.writeValueAsString(answer));
+            int code;
+            if (sending.equalsIgnoreCase("on")) {
+                code = this.CONTEXT.getBean(SamsungTools.class).sendRequestToSamsung(mapper.writeValueAsString(answer));
+            } else {
+                code = 200;
+
+            }
             if(code == 200) {
                 log.info("Выставление флага отправлено для заказа - {}", REQUEST_BODY.getDocumentNumber());
                 REQUEST_BODY.setAskansSend(true);

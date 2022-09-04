@@ -293,7 +293,7 @@ public class PKFInfo implements Serializable {
      * Выслан ли ASKANS.
      */
     @JsonIgnore
-    @Column(columnDefinition = "bit")
+    @Column(columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean askansSend = false;
 
