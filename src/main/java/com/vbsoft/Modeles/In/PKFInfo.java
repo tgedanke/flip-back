@@ -10,6 +10,7 @@ import com.vbsoft.Modeles.In.Enums.IncotermsCode;
 import com.vbsoft.Modeles.In.Enums.MessageFunctionCode;
 import com.vbsoft.Modeles.In.Enums.PaymentMethodCode;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -292,6 +293,8 @@ public class PKFInfo implements Serializable {
      * Выслан ли ASKANS.
      */
     @JsonIgnore
+    @Column(columnDefinition = "bit")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean askansSend = false;
 
     /**
