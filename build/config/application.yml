@@ -6,6 +6,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
       connection-test-query: select 1
+      connection-timeout: 30000
+      maximum-pool-size: 10
   jpa:
     show-sql: true
     generate-ddl: false
