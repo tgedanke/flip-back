@@ -54,7 +54,12 @@ public final class SamsungTools {
         builder.sslSocketFactory(trustAllSslSocketFactory, (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
         client = builder.build();
-        String currentURL = this.environment.getActiveProfiles()[0].equalsIgnoreCase("prod") ? this.samsungProdHost: this.samsungHost;
+        String currentURL;
+        try {
+            currentURL = this.environment.getActiveProfiles()[0].equalsIgnoreCase("prod") ? this.samsungProdHost: this.samsungHost;
+        } catch (Exception ex) {
+            currentURL = this.samsungProdHost;
+        }
         REQUEST_BODY = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + REQUEST_BODY;
         log.info("Тело запроса самсунгу\n" + REQUEST_BODY);
         RequestBody body = RequestBody.create(MediaType.parse("text/xml"), REQUEST_BODY);

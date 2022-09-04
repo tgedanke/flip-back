@@ -50,6 +50,14 @@ spring:
 spring:
   config:
     activate:
+      on-profile: test
+  datasource:
+    url: jdbc:jtds:sqlserver://rocket/edi
+
+---
+spring:
+  config:
+    activate:
       on-profile: local
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres

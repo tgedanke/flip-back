@@ -31,7 +31,7 @@ logging:
       springframework-web: error
     com.vbsoft: info
   file:
-    name: samsung/logs/servicelog.log
+    name: logs/servicelog.log
 ---
 spring:
   config:
@@ -46,6 +46,14 @@ spring:
       on-profile: prod
   datasource:
     url: jdbc:jtds:sqlserver://rocket/edi
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    url: jdbc:jtds:sqlserver://rocket/edi
+
 ---
 spring:
   config:
