@@ -35,15 +35,15 @@ import java.util.List;
         @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true),
         @PropertySource("classpath:Constants.properties")
 })
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class SamsungASKANSSender {
 
     /**
      * Контекст Spring.
      */
-    ApplicationContext CONTEXT;
+    final ApplicationContext CONTEXT;
 
-    SamsungLogger log;
+    final SamsungLogger log;
 
     @Value("${samsung.sender.enable}")
     String sending = "on";
@@ -75,10 +75,10 @@ public class SamsungASKANSSender {
      */
     @Scheduled(fixedRateString = "${samsung.askans.rate}")
     public void sendASKANS() {
-        log.info("Посылаю запрос на сервер Samsung");
+        log.info("Выполняю отправку SKANS");
         List<PKFInfo> deliveries = this.getNotSentDeliveries();
         deliveries.parallelStream().forEach(this::sendASKAN);
-        log.info("Запрос выслан");
+        log.info("Отправка завершена");
 
     }
 
@@ -100,11 +100,10 @@ public class SamsungASKANSSender {
         answer.setInfo("SUCCESS");
         try {
             int code;
-            if (sending.equalsIgnoreCase("on")) {
+            if (this.sending.equalsIgnoreCase("on")) {
                 code = this.CONTEXT.getBean(SamsungTools.class).sendRequestToSamsung(mapper.writeValueAsString(answer));
             } else {
                 code = 200;
-
             }
             if(code == 200) {
                 log.info("Выставление флага отправлено для заказа - {}", REQUEST_BODY.getDocumentNumber());
@@ -121,7 +120,7 @@ public class SamsungASKANSSender {
         } catch (JsonProcessingException json) {
             log.error("Не удалось отправить ASKANS для заказа - " + REQUEST_BODY.getDocumentNumber(), json);
         } catch (Exception ex) {
-            log.error("Не удалось отправить ASKANS для заказа - " + REQUEST_BODY.getDocumentNumber() + ". Необработанная ошибка.", ex);
+            log.error("Не удалось отправить ASKANS для заказа '{}'. Сообщение:\n - {}", REQUEST_BODY.getDocumentNumber(), ex.getMessage());
         }
 
         log.info("Запрос отправлен");

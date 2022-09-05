@@ -7,6 +7,7 @@ import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESInfoListDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
+import com.vbsoft.Services.scheduled.SamsungASKANSSender;
 import com.vbsoft.Utils.SamsungLogger;
 import com.vbsoft.Utils.SamsungTools;
 import lombok.AccessLevel;
@@ -18,6 +19,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -114,12 +116,18 @@ public class SamsungDeliveryService {
     String UNKNOWN_PATH;
 
     /**
+     * Контекст Spring.
+     */
+    ApplicationContext CONTEXT;
+
+    /**
      * Конструктор сервиса.
      *
      * @param context Контекст Spring
      */
     @Autowired
     public SamsungDeliveryService(ApplicationContext context) {
+        this.CONTEXT = context;
         this.DELIVERY_DAO = context.getBean(DeliveryDAO.class);
         this.SamsungTOOLS = context.getBean(SamsungTools.class);
         this.log = context.getBean(SamsungLogger.class);
@@ -408,13 +416,17 @@ public class SamsungDeliveryService {
      *
      * @param ID ID Заказа
      */
-    public void deleteOrder(Long ID) {
+    public boolean deleteOrder(Long ID) {
         Optional<PKFInfo> optional = this.DELIVERY_DAO.findById(ID);
-        if (optional.isPresent())
+        boolean result = false;
+        if (optional.isPresent()) {
+            result = true;
             this.deleteOrder(optional.get());
+        }
         else
             log.info("Не удалось удалить заказ. Не найдено заказов с ID - '{}'", ID);
 
+        return result;
     }
 
     /**
@@ -466,7 +478,7 @@ public class SamsungDeliveryService {
      *
      * @param ORDER Заказ
      */
-    public void saveSamsungRequest(final PKFInfo ORDER) {
+    public void saveSamsungRequest(@Valid final PKFInfo ORDER) {
         try {
             ORDER.setTryCount(TRY_COUNT);
             ORDER.getBusinessType().setInfo(ORDER);
@@ -488,28 +500,25 @@ public class SamsungDeliveryService {
     }
 
     /**
-     * Return success answer.
+     * Отправляет заказ серверу SAMSUNG вручную.
      *
-     * @param REQUEST_BODY Package item
-     * @return ACKANS
-     * @throws JsonProcessingException Throws JSON formatting exception
+     * @param ID ID заказа
+     * @return Результат
      */
-    public String sendSuccessMessage(final PKFInfo REQUEST_BODY) throws JsonProcessingException {
-        XmlMapper mapper = new XmlMapper();
-        ACKANSDelivery answer = new ACKANSDelivery();
-        answer.setSenderIdentifier(REQUEST_BODY.getReceiverIdentifier());
-        answer.setReceiverIdentifier(REQUEST_BODY.getSenderIdentifier());
-        answer.setNumber(REQUEST_BODY.getNumber());
-        answer.setMessageReceiveDate(new Date());
-        answer.setMessageReceiveTime(new Date());
-        answer.setAckSendDate(new Date());
-        answer.setAckSendTime(new Date());
-        answer.setInfo("SUCCESS");
-        this.SamsungTOOLS.sendRequestToSamsung(mapper.writeValueAsString(answer));
+    public boolean sendSuccessMessage(Long ID) {
+        PKFInfo info = this.getOrderByID(ID);
+        if(info == null)
+            return false;
 
-        return mapper.writeValueAsString(answer);
+        this.CONTEXT.getBean(SamsungASKANSSender.class).sendASKAN(info);
+        return true;
     }
 
+    /**
+     * Посылает сообщение об ошибке.
+     * @param REQUEST_BODY Информация о заказе
+     * @param MESSAGE Сообщение об ошибке
+     */
     public void sendErrorMessage(final PKFInfo REQUEST_BODY, final String MESSAGE) {
         GENRESDelivery model = new GENRESDelivery();
         model.setMessageSenderIdentifier(REQUEST_BODY.getSenderIdentifier());

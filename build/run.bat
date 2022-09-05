@@ -5,6 +5,7 @@ set config.path=%base.path%\config
 
 set spring.profile.active=prod
 set spring.config.location=%config.path%\application.yml
+set server.port = 9090
 
 "%JAVA_HOME%\bin\java.exe" -jar SamsungAPIService.jar
 

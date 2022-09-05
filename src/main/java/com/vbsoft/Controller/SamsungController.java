@@ -59,10 +59,10 @@ public class SamsungController {
      * @return Ответ клиенту
      */
     @PostMapping
-    public String getMessage(@RequestBody String mod) {
+    public ResponseEntity<Object> getMessage(@RequestBody String mod) {
         String file = this.saveFile(mod);
         this.service.saveSamsungStringRequest(mod, file);
-        return "processed";
+        return ResponseEntity.ok().body("processed");
     }
 
     /**
@@ -100,7 +100,7 @@ public class SamsungController {
      * @return Ответ клиенту
      */
     @GetMapping(params = {"document"})
-    public ResponseEntity<Object> get(@RequestParam String document) {
+    public ResponseEntity<Object> get(@RequestParam() String document) {
         if(document.equalsIgnoreCase("errors")) {
             return this.getErrors();
         } else {
@@ -201,10 +201,22 @@ public class SamsungController {
      *
      * @return Ответ клиенту
      */
-    @DeleteMapping(params = "documentID")
-    public String delete(@RequestParam Long ID) {
-        this.service.deleteOrder(ID);
-        return "processed";
+    @DeleteMapping(params = "document")
+    public ResponseEntity<Object> delete(@RequestParam(defaultValue = "none", name = "document") String ID) {
+        try {
+            if(ID.equalsIgnoreCase("none"))
+                throw new Exception("Не заполнен параметр 'documentID'");
+
+            Long id = Long.parseLong(ID);
+            if(!this.service.deleteOrder(id)) {
+                throw new Exception("Не удалось удалить заказ с ID - " + ID);
+            }
+            return ResponseEntity
+                    .ok().body("deleted");
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .badRequest().body(ex.getMessage());
+        }
     }
 
     /**
@@ -214,19 +226,32 @@ public class SamsungController {
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     @PutMapping
-    public String put() {
-        return null;
+    public ResponseEntity<Object> put() {
+        return ResponseEntity
+                .status(HttpStatus.NOT_IMPLEMENTED)
+                .body("Запрос не активен");
     }
 
     /**
-     * Patch запрос (неактивен).
+     * Посылает ASKANS вручную
      *
+     * @param ID ID заказа
      * @return Ответ клиенту
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    @PatchMapping
-    public String patch() {
-        return null;
+    @PatchMapping(params = "document")
+    public ResponseEntity<Object> patch(@RequestParam(name = "document") String ID) {
+        try {
+            Long id = Long.parseLong(ID);
+            if (!this.service.sendSuccessMessage(id))
+                throw new Exception("Не удалось отправить подтверждение. Информация о заказе не была получена");
+
+            return ResponseEntity
+                    .ok().body("ASKANS was sent");
+        } catch (Exception ex) {
+            return ResponseEntity
+                    .badRequest().body(ex.getMessage());
+        }
     }
 
 }
