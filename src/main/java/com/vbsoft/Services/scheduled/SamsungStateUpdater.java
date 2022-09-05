@@ -19,8 +19,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @PropertySources({
-        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true),
-        @PropertySource("classpath:Constants.properties")
+        @PropertySource("classpath:Constants.properties"),
+        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true)
 })
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SamsungStateUpdater implements Runnable{

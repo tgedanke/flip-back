@@ -3,7 +3,6 @@ package com.vbsoft.Services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Modeles.In.PKFInfo;
-import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESDelivery;
 import com.vbsoft.Modeles.Out.GENRES.GENRESInfoListDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
@@ -21,13 +20,11 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -39,8 +36,8 @@ import java.util.zip.ZipOutputStream;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @PropertySources({
-        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true),
-        @PropertySource("classpath:Constants.properties")
+        @PropertySource("classpath:Constants.properties"),
+        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true)
 })
 public class SamsungDeliveryService {
 

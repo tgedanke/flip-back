@@ -32,8 +32,8 @@ import java.util.List;
  */
 @Component
 @PropertySources({
-        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true),
-        @PropertySource("classpath:Constants.properties")
+        @PropertySource("classpath:Constants.properties"),
+        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true)
 })
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SamsungASKANSSender {

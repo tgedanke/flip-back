@@ -5,6 +5,7 @@ import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
@@ -26,9 +27,12 @@ import java.util.Objects;
  * @since 1.0
  * @version 1.0
  */
-@Component
-@PropertySource("classpath:Constants.properties")
 @Log4j2
+@Component
+@PropertySources({
+        @PropertySource("classpath:Constants.properties"),
+        @PropertySource(value = "file:${base.path}/config/Constants.properties", ignoreResourceNotFound = true)
+})
 public final class SamsungTools {
 
     private final Environment environment;
