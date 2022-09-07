@@ -76,7 +76,7 @@ public class SamsungASKANSSender {
     public void sendASKANS() {
         log.info("Выполняю отправку SKANS");
         List<PKFInfo> deliveries = this.getNotSentDeliveries();
-        deliveries.parallelStream().forEach(this::sendASKAN);
+        deliveries.forEach(this::sendASKAN);
         log.info("Отправка завершена");
 
     }
@@ -96,7 +96,7 @@ public class SamsungASKANSSender {
      *
      * @param REQUEST_BODY Информация о заказе
      */
-    public void sendASKAN(PKFInfo REQUEST_BODY, boolean handEnabled) {
+    public synchronized void sendASKAN(PKFInfo REQUEST_BODY, boolean handEnabled) {
         log.info("ASKANS запрос для заказа - " + REQUEST_BODY.getDocumentNumber());
         XmlMapper mapper = new XmlMapper();
         ACKANSDelivery answer = new ACKANSDelivery();
