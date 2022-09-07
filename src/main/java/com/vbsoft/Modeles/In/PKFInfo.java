@@ -39,7 +39,7 @@ public class PKFInfo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private long ID;
+    private Long ID;
 
     /**
      * Аттрибут заголовка nr1:PKGINF.

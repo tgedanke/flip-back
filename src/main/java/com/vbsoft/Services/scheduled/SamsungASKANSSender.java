@@ -106,6 +106,7 @@ public class SamsungASKANSSender {
                 code = 200;
             }
             if(code == 200) {
+                log.info("***ID document - {}", REQUEST_BODY.getID());
                 log.info("Выставление флага отправлено для заказа - {}", REQUEST_BODY.getDocumentNumber());
                 REQUEST_BODY.setAskansSend(true);
                 REQUEST_BODY.setProcessedDate(new Date());
