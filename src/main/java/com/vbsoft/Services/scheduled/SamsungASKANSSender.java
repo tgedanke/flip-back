@@ -22,13 +22,12 @@ import java.util.List;
 
 /**
  * Посылает ASKANS на сервера Samsung.
- *
+ * <p>
  * !!! Запланированное задание !!!.
  * Для изменения времени выполнения задания требуется
  * 1) Открыть файл "Constants.properties"
  * 2) Найти константу "samsung.askans.rate"
  * 3) Изменить значение
- *
  */
 @Component
 @PropertySources({
@@ -50,6 +49,7 @@ public class SamsungASKANSSender {
 
     /**
      * Конструктор.
+     *
      * @param context Контекст Spring.
      */
     @Autowired
@@ -60,18 +60,17 @@ public class SamsungASKANSSender {
 
     /**
      * Метод выполнения задания.
-     *
+     * <p>
      * Принцип работы:
      * 1) Находит записи с полем "askansSend" равным "False" и не равным "Null".
      * 2) Отправляет запросы на сервер Samsung.
-     *
+     * <p>
      * Исключения:
      * 1) При ошибке парсинга JSON. Записывает ошибку в БД.
      * 2) Если Samsung выдает ответ отличным от "200". Записывает ошибку в БД.
      * 3) Не обработанные ошибки. Помечает "Необработанная ошибка.". Записывает ошибку в БД.
-     *
+     * <p>
      * !!! При каждой ошибки флаг "askansSend" не будет выставлен и на следующей итерации запрос будет повторен !!!
-     *
      */
     @Scheduled(fixedRateString = "${samsung.askans.rate}")
     public void sendASKANS() {
@@ -84,9 +83,20 @@ public class SamsungASKANSSender {
 
     /**
      * Метод засылки запроса на сервер Samsung.
+     *
      * @param REQUEST_BODY Информация о заказе
      */
     public void sendASKAN(PKFInfo REQUEST_BODY) {
+        this.sendASKAN(REQUEST_BODY, false);
+
+    }
+
+    /**
+     * Метод засылки запроса на сервер Samsung.
+     *
+     * @param REQUEST_BODY Информация о заказе
+     */
+    public void sendASKAN(PKFInfo REQUEST_BODY, boolean handEnabled) {
         log.info("ASKANS запрос для заказа - " + REQUEST_BODY.getDocumentNumber());
         XmlMapper mapper = new XmlMapper();
         ACKANSDelivery answer = new ACKANSDelivery();
@@ -105,17 +115,20 @@ public class SamsungASKANSSender {
             } else {
                 code = 200;
             }
-            if(code == 200) {
+            if (handEnabled)
+                code = this.CONTEXT.getBean(SamsungTools.class).sendRequestToSamsung(mapper.writeValueAsString(answer));
+
+            if (code == 200) {
                 log.info("***ID document - {}", REQUEST_BODY.getID());
                 log.info("Выставление флага отправлено для заказа - {}", REQUEST_BODY.getDocumentNumber());
                 REQUEST_BODY.setAskansSend(true);
                 REQUEST_BODY.setProcessedDate(new Date());
             } else {
-                if(REQUEST_BODY.getTryCount() == 0) {
+                if (REQUEST_BODY.getTryCount() == 0) {
                     log.error("Не удалось отправить ASKANS для заказа {} ответ от сервера - {}", REQUEST_BODY.getDocumentNumber(), code);
                 }
-                    Integer count = REQUEST_BODY.getTryCount() - 1;
-                    REQUEST_BODY.setTryCount(count);
+                Integer count = REQUEST_BODY.getTryCount() - 1;
+                REQUEST_BODY.setTryCount(count);
             }
             this.CONTEXT.getBean(DeliveryDAO.class).save(REQUEST_BODY);
         } catch (JsonProcessingException json) {
@@ -129,6 +142,7 @@ public class SamsungASKANSSender {
 
     /**
      * Получает информацию о не отправленных заказах.
+     *
      * @return Информация о заказе
      */
     private List<PKFInfo> getNotSentDeliveries() {

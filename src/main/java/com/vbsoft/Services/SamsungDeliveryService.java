@@ -507,7 +507,7 @@ public class SamsungDeliveryService {
         if(info == null)
             return false;
 
-        this.CONTEXT.getBean(SamsungASKANSSender.class).sendASKAN(info);
+        this.CONTEXT.getBean(SamsungASKANSSender.class).sendASKAN(info, true);
         return true;
     }
 
