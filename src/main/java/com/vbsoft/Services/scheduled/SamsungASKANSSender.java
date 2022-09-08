@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.vbsoft.Modeles.In.PKFInfo;
 import com.vbsoft.Modeles.Out.ACKANSD.ACKANSDelivery;
 import com.vbsoft.Modeles.Repositiries.DeliveryDAO;
+import com.vbsoft.Modeles.Repositiries.SamsungAcceptRepository;
 import com.vbsoft.Utils.SamsungLogger;
 import com.vbsoft.Utils.SamsungTools;
 import lombok.AccessLevel;
@@ -76,7 +77,7 @@ public class SamsungASKANSSender {
     public void sendASKANS() {
         log.info("Выполняю отправку SKANS");
         List<PKFInfo> deliveries = this.getNotSentDeliveries();
-        deliveries.forEach(this::sendASKAN);
+        deliveries.parallelStream().forEach(this::sendASKAN);
         log.info("Отправка завершена");
 
     }
@@ -96,7 +97,7 @@ public class SamsungASKANSSender {
      *
      * @param REQUEST_BODY Информация о заказе
      */
-    public synchronized void sendASKAN(PKFInfo REQUEST_BODY, boolean handEnabled) {
+    public void sendASKAN(PKFInfo REQUEST_BODY, boolean handEnabled) {
         log.info("ASKANS запрос для заказа - " + REQUEST_BODY.getDocumentNumber());
         XmlMapper mapper = new XmlMapper();
         ACKANSDelivery answer = new ACKANSDelivery();
@@ -121,16 +122,14 @@ public class SamsungASKANSSender {
             if (code == 200) {
                 log.info("***ID document - {}", REQUEST_BODY.getID());
                 log.info("Выставление флага отправлено для заказа - {}", REQUEST_BODY.getDocumentNumber());
-                REQUEST_BODY.setAskansSend(true);
-                REQUEST_BODY.setProcessedDate(new Date());
+                this.CONTEXT.getBean(SamsungAcceptRepository.class).acceptOrder(REQUEST_BODY.getID(), true);
             } else {
                 if (REQUEST_BODY.getTryCount() == 0) {
                     log.error("Не удалось отправить ASKANS для заказа {} ответ от сервера - {}", REQUEST_BODY.getDocumentNumber(), code);
                 }
-                Integer count = REQUEST_BODY.getTryCount() - 1;
-                REQUEST_BODY.setTryCount(count);
+                log.warn("Не удалось отправить ASKANS для заказ c ID - '{}'. Номер документа - '{}'", REQUEST_BODY.getID(), REQUEST_BODY.getDocumentNumber());
+                this.CONTEXT.getBean(SamsungAcceptRepository.class).acceptOrder(REQUEST_BODY.getID(), false);
             }
-            this.CONTEXT.getBean(DeliveryDAO.class).save(REQUEST_BODY);
         } catch (JsonProcessingException json) {
             log.error("Не удалось отправить ASKANS для заказа - " + REQUEST_BODY.getDocumentNumber(), json);
         } catch (Exception ex) {
