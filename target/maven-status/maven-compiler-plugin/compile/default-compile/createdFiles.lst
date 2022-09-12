@@ -50,6 +50,7 @@ com\vbsoft\Modeles\In\Enums\FreightMethodCode.class
 com\vbsoft\Modeles\Out\GENRES\GENRESInfoListDelivery.class
 com\vbsoft\Modeles\Out\TRKINF\Enums\TrackEvent.class
 com\vbsoft\Modeles\Out\GENRES\GENRESDelivery.class
+com\vbsoft\Modeles\Service\SamsungOrderAccept.class
 com\vbsoft\Modeles\Repositiries\SamsungErrorRepository.class
 com\vbsoft\Modeles\In\Enums\CountryCode.class
 com\vbsoft\Modeles\Repositiries\SamsungStateRepository.class
@@ -61,5 +62,6 @@ com\vbsoft\Exceptions\ServiceException.class
 com\vbsoft\Modeles\In\RelatedDocument.class
 com\vbsoft\Modeles\Service\SamsungState.class
 com\vbsoft\Config\SwaggerProperties.class
+com\vbsoft\Modeles\Repositiries\SamsungAcceptRepository.class
 com\vbsoft\Modeles\In\Enums\TransportationTypeCode.class
 com\vbsoft\Modeles\In\Enums\PaymentMethodCode.class

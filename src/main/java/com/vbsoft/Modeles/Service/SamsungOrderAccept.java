@@ -8,7 +8,6 @@ import org.hibernate.type.NumericBooleanType;
 import javax.persistence.*;
 
 @Entity
-@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NamedStoredProcedureQuery(
         name = "sp_samsungAcceptOrder",

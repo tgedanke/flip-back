@@ -7,7 +7,6 @@ import lombok.experimental.FieldDefaults;
 import javax.persistence.*;
 
 @Entity
-@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NamedStoredProcedureQuery(
         name = "sp_createSamsungError",
